@@ -5,7 +5,7 @@ const Navbar = () => {
     <nav className="flex items-center justify-between bg-white p-5">
       <div>
         <Link to={"/"}>
-          <h1 className="text-orange text-2xl font-bold">Recipes</h1>
+          <h1 className="text-3xl font-bold text-orange">Recipes</h1>
         </Link>
       </div>
       <ul className="flex space-x-10">
