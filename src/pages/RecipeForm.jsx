@@ -75,15 +75,17 @@ const RecipeForm = () => {
   };
 
   const getErrorMessages = (field) => {
-    return isError
-      ? isError
-          .filter((error) => error.path === field)
-          .map((error) => (
-            <p key={error.msg} className="text-red-500">
-              {error.msg}
-            </p>
-          ))
-      : null;
+    if (isError) {
+      const error = isError.find((error) => error.path === field);
+      if (error) {
+        return (
+          <p key={error.msg} className="text-red-500">
+            {error.msg}
+          </p>
+        );
+      }
+    }
+    return null;
   };
 
   const filteredOut = (index) => {
@@ -115,7 +117,7 @@ const RecipeForm = () => {
               name="title"
               id="title"
               placeholder="title"
-              className="w-full rounded-md p-2 outline-none"
+              className={`w-full rounded-md p-2 outline-none ${getErrorMessages("title") ? "border border-red-600" : ""}`}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -130,7 +132,7 @@ const RecipeForm = () => {
               id="description"
               placeholder="description"
               rows={5}
-              className="w-full rounded-md p-2 outline-none"
+              className={`w-full rounded-md p-2 outline-none ${getErrorMessages("description") ? "border border-red-600" : ""}`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
