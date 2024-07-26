@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
-import { RiArrowGoBackLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { default as BackBtn, default as Button } from "../components/Button";
 import IngredientCard from "../components/IngredientCard";
 
 const RecipeForm = () => {
@@ -21,7 +21,7 @@ const RecipeForm = () => {
   const getRecipe = useCallback(
     async (id) => {
       try {
-        const res = await axios.get(`${apiURL}/${id}`);
+        const res = await axios.get(`${apiURL}/recipes/${id}`);
         if (res.status >= 200 && res.status < 300) {
           const { title, description, ingredients } = res.data;
           setTitle(title);
@@ -62,8 +62,8 @@ const RecipeForm = () => {
         ingredients,
       };
       const res = id
-        ? await axios.patch(`${apiURL}/${id}`, recipe)
-        : await axios.post(`${apiURL}`, recipe);
+        ? await axios.patch(`${apiURL}/recipes/${id}`, recipe)
+        : await axios.post(`${apiURL}/recipes`, recipe);
       if (res.status >= 200 && res.status < 300) {
         navigate("/");
       }
@@ -79,7 +79,7 @@ const RecipeForm = () => {
       const error = isError.find((error) => error.path === field);
       if (error) {
         return (
-          <p key={error.msg} className="text-red-500">
+          <p key={error.msg} className="text-xs italic text-red-500">
             {error.msg}
           </p>
         );
@@ -94,61 +94,60 @@ const RecipeForm = () => {
 
   return (
     <div className="mx-auto max-w-md">
-      <div
-        className="flex justify-end pb-1"
-        title="back"
-        onClick={() => navigate(-1)}
-      >
-        <RiArrowGoBackLine className="cursor-pointer rounded-md border border-white bg-orange py-1 text-4xl text-white" />
+      <div className="flex justify-end pb-1">
+        <BackBtn btnType={"back"} />
       </div>
-      <div className="rounded-sm border-2 border-white p-4">
-        <h1 className="mb-6 text-center text-2xl font-bold text-orange">
-          Recipe {`${id ? "Edit" : "Create"}`} Form
+      <div className="mb-4 rounded border-2 border-white bg-white p-4 px-8 pb-8 pt-6 shadow-md">
+        <h1 className="mb-6 text-center text-xl font-bold text-orange">
+          Recipe {`${id ? "Update" : "Create"}`} Form
         </h1>
-
         <form className="space-y-5" onSubmit={handleSubmitForm}>
           <div className="space-y-2">
-            <label htmlFor="title" className="font-medium">
+            <label
+              htmlFor="title"
+              className="mb-2 block text-sm font-bold text-gray-700"
+            >
               Title
             </label>
-            {getErrorMessages("title")}
             <input
               type="text"
               name="title"
               id="title"
               placeholder="title"
-              className={`w-full rounded-md p-2 outline-none ${getErrorMessages("title") ? "border border-red-600" : ""}`}
+              className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessages("title") ? "border border-red-600" : ""}`}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+
+            {getErrorMessages("title")}
           </div>
           <div className="space-y-2">
             <label htmlFor="description" className="font-medium">
               Description
             </label>
-            {getErrorMessages("description")}
             <textarea
               name="description"
               id="description"
               placeholder="description"
               rows={5}
-              className={`w-full rounded-md p-2 outline-none ${getErrorMessages("description") ? "border border-red-600" : ""}`}
+              className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessages("description") ? "border border-red-600" : ""}`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
+
+            {getErrorMessages("description")}
           </div>
           <div className="space-y-2">
             <label htmlFor="ingredient" className="font-medium">
               Ingredients
             </label>
-            {getErrorMessages("ingredients")}
             <div className="flex items-center gap-1">
               <input
                 type="text"
                 name="ingredient"
                 id="ingredient"
                 placeholder="ingredient"
-                className="w-full rounded-md p-2 outline-none"
+                className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
                 value={newIngredient}
                 onChange={(e) => setNewIngredient(e.target.value)}
               />
@@ -157,6 +156,9 @@ const RecipeForm = () => {
                 onClick={handleAddIngredients}
               />
             </div>
+
+            {getErrorMessages("ingredients")}
+
             <div className="flex flex-wrap gap-1">
               <IngredientCard
                 ingredients={ingredients}
@@ -165,11 +167,11 @@ const RecipeForm = () => {
               />
             </div>
           </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full rounded-md bg-orange py-2 font-medium text-white ${isLoading ? "cursor-not-allowed" : ""}`}
+          <Button
+            status={isLoading}
+            bg={true}
+            btnType={"formBtn"}
+            type={"submit"}
           >
             {isLoading
               ? id
@@ -178,7 +180,7 @@ const RecipeForm = () => {
               : id
                 ? "Update"
                 : "Create"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

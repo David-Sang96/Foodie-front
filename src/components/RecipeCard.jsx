@@ -17,7 +17,7 @@ const RecipeCard = ({ recipe, filterRecipes }) => {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(`${apiURL}/${_id}`);
+      const res = await axios.delete(`${apiURL}/recipes/${_id}`);
       if (res.status >= 200 && res.status < 300) {
         filterRecipes(_id);
         setIsOpen(false);

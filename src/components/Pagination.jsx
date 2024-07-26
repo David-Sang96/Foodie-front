@@ -54,7 +54,7 @@ const Pagination = ({ totalPages, currentPage }) => {
             {[...Array(totalPages)].map((_, index) => (
               <div
                 key={index + 1}
-                className={`relative inline-flex cursor-pointer items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0 ${currentPage === index + 1 ? "bg-orange text-white" : ""}`}
+                className={`relative inline-flex cursor-pointer items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-amber-600 hover:text-white focus:z-20 focus:outline-offset-0 ${currentPage === index + 1 ? "bg-orange text-white" : ""}`}
                 onClick={() => handlePageNum(index + 1)}
               >
                 {index + 1}

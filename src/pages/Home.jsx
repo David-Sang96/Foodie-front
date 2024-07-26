@@ -20,7 +20,9 @@ const Home = () => {
 
   useEffect(() => {
     const getRecipes = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}?page=${page}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/recipes/?page=${page}`,
+      );
       const data = await res.json();
       setResData(data);
 

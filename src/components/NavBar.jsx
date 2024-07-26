@@ -29,6 +29,11 @@ const Navbar = () => {
             Create Recipe
           </NavLink>
         </li>
+        <li>
+          <NavLink to={"/sign-up"} className="hover:text-orange">
+            Create Account
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
