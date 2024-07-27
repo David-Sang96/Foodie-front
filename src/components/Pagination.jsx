@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Pagination = ({ totalPages, currentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const handlePageNum = (value) => {
-    if (value < 1 || value > totalPages) return;
+    if (value < 1 || value > totalPages) return navigate("/");
     searchParams.set("page", value);
     setSearchParams(searchParams);
   };

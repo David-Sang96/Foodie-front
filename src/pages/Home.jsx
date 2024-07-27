@@ -2,13 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
 import RecipeCard from "../components/RecipeCard";
+import axios from "../helpers/axios";
 
 const Home = () => {
   const [resData, setResData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const page = parseInt(searchParams.get("page")) || 1;
   const { recipes, totalPages } = resData;
 
@@ -20,13 +25,19 @@ const Home = () => {
 
   useEffect(() => {
     const getRecipes = async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/recipes/?page=${page}`,
-      );
-      const data = await res.json();
-      setResData(data);
-
-      window.scroll({ top: 0, left: 0, behavior: "smooth" });
+      try {
+        setIsError(null);
+        setIsLoading(true);
+        const res = await axios(`/recipes/?page=${page}`);
+        if (res.status >= 200 && res.status < 300) {
+          setResData(res.data);
+        }
+        window.scroll({ top: 0, left: 0, behavior: "smooth" });
+      } catch (error) {
+        setIsError(error.response.data);
+      } finally {
+        setIsLoading(false);
+      }
     };
     getRecipes();
   }, [page]);
@@ -42,21 +53,29 @@ const Home = () => {
     }));
   };
 
+  if (isError) return navigate("/sign-in");
+
   return (
-    <div className="space-y-3">
-      {recipes?.length > 0 ? (
-        recipes.map((recipe) => (
-          <RecipeCard
-            key={recipe._id}
-            recipe={recipe}
-            filterRecipes={filterRecipes}
-          />
-        ))
+    <>
+      {isLoading ? (
+        <Loader />
       ) : (
-        <div>No recipe found</div>
+        <div className="space-y-3">
+          {recipes?.length > 0 ? (
+            recipes.map((recipe) => (
+              <RecipeCard
+                key={recipe._id}
+                recipe={recipe}
+                filterRecipes={filterRecipes}
+              />
+            ))
+          ) : (
+            <div>No recipe found</div>
+          )}
+          <Pagination totalPages={totalPages} currentPage={page} />
+        </div>
       )}
-      <Pagination totalPages={totalPages} currentPage={page} />
-    </div>
+    </>
   );
 };
 

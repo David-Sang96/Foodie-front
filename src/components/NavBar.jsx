@@ -1,10 +1,22 @@
-import { Link, NavLink } from "react-router-dom";
+import { GiCook } from "react-icons/gi";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/sign-in");
+    toast.success("logged out successfully!");
+  };
+
   return (
     <nav className="flex items-center justify-between bg-white p-5">
       <div>
-        <Link to={"/"}>
+        <Link to={"/"} className="flex items-center justify-center gap-1">
+          <GiCook className="text-4xl text-orange" />
           <h1 className="text-3xl font-bold text-orange">Recipes</h1>
         </Link>
       </div>
@@ -31,8 +43,18 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink to={"/sign-up"} className="hover:text-orange">
-            Create Account
+            Register
           </NavLink>
+        </li>
+        <li>
+          <NavLink to={"/sign-in"} className="hover:text-orange">
+            Login
+          </NavLink>
+        </li>
+        <li>
+          <button className="hover:text-orange" onClick={handleLogout}>
+            Logout
+          </button>
         </li>
       </ul>
     </nav>

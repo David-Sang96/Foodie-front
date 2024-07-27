@@ -1,6 +1,7 @@
-import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "../helpers/axios";
 
 const SignUpForm = () => {
   const [username, setUsername] = useState("");
@@ -22,16 +23,15 @@ const SignUpForm = () => {
         password,
         passwordConfirmation,
       };
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/users/register`,
-        data,
-        { withCredentials: true },
-      );
+      const res = await axios.post(`/users/register`, data);
       if (res.status >= 200 && res.status < 300) {
+        toast.success("registered successfully");
         navigate("/sign-in");
       }
     } catch (error) {
-      setIsError(error.response.data.errors);
+      console.log(error);
+      toast.error("something went wrong");
+      setIsError(error.response.data);
     } finally {
       setIsLoading(false);
     }
@@ -39,9 +39,12 @@ const SignUpForm = () => {
 
   const getErrorMessages = (field) => {
     if (isError) {
-      const error = isError.find((error) => error.path === field);
-      if (error) {
-        return <p className="text-xs italic text-red-500">{error.msg}</p>;
+      if (isError.message.path === field) {
+        return (
+          <p className="text-xs font-medium italic text-red-500">
+            {isError.message.msg}
+          </p>
+        );
       }
     }
     return null;
@@ -128,16 +131,16 @@ const SignUpForm = () => {
           />
           {getErrorMessages("passwordConfirmation")}
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-4">
           <button
-            className={`focus:shadow-outline rounded bg-orange px-4 py-2 font-bold text-white hover:bg-amber-600 focus:outline-none ${isLoading ? "cursor-not-allowed" : ""}`}
+            className={`focus:shadow-outline w-full rounded bg-orange px-4 py-2 font-bold text-white hover:bg-amber-600 focus:outline-none ${isLoading ? "cursor-not-allowed" : ""}`}
             type="submit"
             disabled={isLoading}
           >
             {isLoading ? "Registering ..." : " Register"}
           </button>
-          <div className="flex flex-col items-end">
-            <span className="text-sm font-medium">Already have account?</span>
+          <div className="flex w-full justify-between gap-2 space-x-2 md:block md:text-center">
+            <span className="text-sm">Already have account?</span>
             <Link
               to={"/sign-in"}
               className="inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"

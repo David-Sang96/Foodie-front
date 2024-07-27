@@ -1,29 +1,30 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
 import { formatISO9075 } from "date-fns";
 import { AiFillEdit } from "react-icons/ai";
 import { RiDeleteBin5Fill } from "react-icons/ri";
+import axios from "../helpers/axios";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import ConfirmModal from "./ConfirmModal";
 import IngredientCard from "./IngredientCard";
 
 const RecipeCard = ({ recipe, filterRecipes }) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const { title, description, ingredients, _id } = recipe;
-  const apiURL = import.meta.env.VITE_API_URL;
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(`${apiURL}/recipes/${_id}`);
+      const res = await axios.delete(`/recipes/${_id}`);
       if (res.status >= 200 && res.status < 300) {
         filterRecipes(_id);
         setIsOpen(false);
+        toast.success("deleted successfully");
       }
     } catch (error) {
       console.log(error);
+      toast.error("something went wrong");
     }
   };
 

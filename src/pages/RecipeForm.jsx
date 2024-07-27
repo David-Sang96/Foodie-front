@@ -1,8 +1,9 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "../helpers/axios";
 
+import { toast } from "react-toastify";
 import { default as BackBtn, default as Button } from "../components/Button";
 import IngredientCard from "../components/IngredientCard";
 
@@ -16,28 +17,32 @@ const RecipeForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const apiURL = import.meta.env.VITE_API_URL;
-
-  const getRecipe = useCallback(
-    async (id) => {
-      try {
-        const res = await axios.get(`${apiURL}/recipes/${id}`);
-        if (res.status >= 200 && res.status < 300) {
-          const { title, description, ingredients } = res.data;
-          setTitle(title);
-          setDescription(description);
-          setIngredients(ingredients);
-        }
-      } catch (error) {
-        console.log(error);
+  const getRecipe = useCallback(async (id) => {
+    try {
+      setIsError(null);
+      setIsLoading(true);
+      const res = await axios.get(`/recipes/${id}`);
+      if (res.status >= 200 && res.status < 300) {
+        const { title, description, ingredients } = res.data;
+        setTitle(title);
+        setDescription(description);
+        setIngredients(ingredients);
       }
-    },
-    [apiURL],
-  );
+    } catch (error) {
+      setIsError(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (id) {
       getRecipe(id);
+    } else {
+      setTitle("");
+      setDescription("");
+      setIngredients([]);
+      setIsError(null);
     }
   }, [id, getRecipe]);
 
@@ -62,13 +67,21 @@ const RecipeForm = () => {
         ingredients,
       };
       const res = id
-        ? await axios.patch(`${apiURL}/recipes/${id}`, recipe)
-        : await axios.post(`${apiURL}/recipes`, recipe);
+        ? await axios.patch(`/recipes/${id}`, recipe)
+        : await axios.post(`/recipes`, recipe);
+
       if (res.status >= 200 && res.status < 300) {
+        toast.success(`${id ? "updated recipe" : "created recipe"}`);
         navigate("/");
       }
     } catch (error) {
-      setIsError(error.response.data.errors);
+      console.log(error);
+      setIsError(error.response.data);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -76,11 +89,13 @@ const RecipeForm = () => {
 
   const getErrorMessages = (field) => {
     if (isError) {
-      const error = isError.find((error) => error.path === field);
-      if (error) {
+      if (
+        typeof isError.message === "object" &&
+        isError.message.path === field
+      ) {
         return (
-          <p key={error.msg} className="text-xs italic text-red-500">
-            {error.msg}
+          <p className="text-xs font-medium italic text-red-500">
+            {isError.message.msg}
           </p>
         );
       }
@@ -98,10 +113,10 @@ const RecipeForm = () => {
         <BackBtn btnType={"back"} />
       </div>
       <div className="mb-4 rounded border-2 border-white bg-white p-4 px-8 pb-8 pt-6 shadow-md">
-        <h1 className="mb-6 text-center text-xl font-bold text-orange">
+        <h1 className="mb-2 text-center text-xl font-bold text-orange">
           Recipe {`${id ? "Update" : "Create"}`} Form
         </h1>
-        <form className="space-y-5" onSubmit={handleSubmitForm}>
+        <form className="mt-3 space-y-5" onSubmit={handleSubmitForm}>
           <div className="space-y-2">
             <label
               htmlFor="title"
