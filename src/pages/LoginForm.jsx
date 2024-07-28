@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuthContext } from "../contexts/AuthContext";
 import axios from "../helpers/axios";
 
 const LoginForm = () => {
@@ -9,6 +10,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
+  const { dispatch } = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ const LoginForm = () => {
       const res = await axios.post(`/users/log-in`, data);
       if (res.status >= 200 && res.status < 300) {
         localStorage.setItem("token", res.data.token);
+        dispatch({ type: "login", payload: res.data.user });
         toast.success("logged in successfully");
         navigate("/");
       }

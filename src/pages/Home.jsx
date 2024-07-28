@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Loader from "../components/Loader";
+import Loader from "../components/Loader.jsx";
 import Pagination from "../components/Pagination";
 import RecipeCard from "../components/RecipeCard";
 import axios from "../helpers/axios";
@@ -31,16 +31,19 @@ const Home = () => {
         const res = await axios(`/recipes/?page=${page}`);
         if (res.status >= 200 && res.status < 300) {
           setResData(res.data);
+          // window.scroll({ top: 0, left: 0, behavior: "smooth" });
         }
-        window.scroll({ top: 0, left: 0, behavior: "smooth" });
       } catch (error) {
         setIsError(error.response.data);
       } finally {
-        setIsLoading(false);
+        //  slight delay to avoid flicker (showing loader component)
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 200);
       }
     };
     getRecipes();
-  }, [page]);
+  }, [page, navigate]);
 
   const filterRecipes = (id) => {
     if (resData.recipes.length === 1 && page > 1) {
@@ -53,29 +56,23 @@ const Home = () => {
     }));
   };
 
-  if (isError) return navigate("/sign-in");
+  if (isLoading) return <Loader />;
 
   return (
-    <>
-      {isLoading ? (
-        <Loader />
+    <div className="space-y-3">
+      {recipes?.length > 0 ? (
+        recipes.map((recipe) => (
+          <RecipeCard
+            key={recipe._id}
+            recipe={recipe}
+            filterRecipes={filterRecipes}
+          />
+        ))
       ) : (
-        <div className="space-y-3">
-          {recipes?.length > 0 ? (
-            recipes.map((recipe) => (
-              <RecipeCard
-                key={recipe._id}
-                recipe={recipe}
-                filterRecipes={filterRecipes}
-              />
-            ))
-          ) : (
-            <div>No recipe found</div>
-          )}
-          <Pagination totalPages={totalPages} currentPage={page} />
-        </div>
+        <div>No recipe found</div>
       )}
-    </>
+      <Pagination totalPages={totalPages} currentPage={page} />
+    </div>
   );
 };
 
