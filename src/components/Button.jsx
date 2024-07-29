@@ -8,7 +8,7 @@ const Button = ({ btnType, fn, children, bg, status, type }) => {
   if (btnType === "back") {
     return (
       <button title="back" onClick={() => navigate(-1)}>
-        <RiArrowGoBackLine className="rounded-md border border-white bg-orange py-1 text-4xl text-white hover:bg-amber-600" />
+        <RiArrowGoBackLine className="rounded-md border border-white bg-orange py-1 text-3xl text-white hover:bg-amber-600" />
       </button>
     );
   }

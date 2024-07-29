@@ -21,7 +21,7 @@ const LoginForm = () => {
         email,
         password,
       };
-      const res = await axios.post(`/users/log-in`, data);
+      const res = await axios.post(`/api/v1/users/log-in`, data);
       if (res.status >= 200 && res.status < 300) {
         localStorage.setItem("token", res.data.token);
         dispatch({ type: "login", payload: res.data.user });

@@ -9,7 +9,6 @@ const Navbar = () => {
   const { user, dispatch } = useAuthContext();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
     dispatch({ type: "logout" });
     navigate("/sign-in");
     toast.success("logged out successfully!");

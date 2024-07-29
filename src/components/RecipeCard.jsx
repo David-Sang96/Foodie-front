@@ -2,35 +2,21 @@
 import { formatISO9075 } from "date-fns";
 import { AiFillEdit } from "react-icons/ai";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import axios from "../helpers/axios";
 
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import ConfirmModal from "./ConfirmModal";
 import IngredientCard from "./IngredientCard";
 
-const RecipeCard = ({ recipe, filterRecipes }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { title, description, ingredients, _id } = recipe;
-
-  const handleDelete = async () => {
-    try {
-      const res = await axios.delete(`/recipes/${_id}`);
-      if (res.status >= 200 && res.status < 300) {
-        filterRecipes(_id);
-        setIsOpen(false);
-        toast.success("deleted successfully");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
-    }
-  };
+const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
+  const { title, description, ingredients, _id, photo } = recipe;
 
   return (
     <>
       <div className="space-y-3 rounded-2xl bg-white p-5">
+        <img
+          src={`${import.meta.env.VITE_API_URL}${photo}`}
+          alt={title}
+          className="mx-auto h-72 rounded-md object-contain"
+        />
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold text-orange">{title}</h3>
           <div className="flex items-center gap-4">
@@ -43,11 +29,14 @@ const RecipeCard = ({ recipe, filterRecipes }) => {
             <RiDeleteBin5Fill
               className="cursor-pointer text-2xl text-orange"
               title="delete"
-              onClick={() => setIsOpen((prev) => !prev)}
+              onClick={() => {
+                setDeleteId(_id);
+                setIsModalOpen((prev) => !prev);
+              }}
             />
           </div>
         </div>
-        <p>Description</p>
+
         <p>{description}</p>
         <div className="flex space-x-1">
           <span>Ingredients -</span>
@@ -58,11 +47,6 @@ const RecipeCard = ({ recipe, filterRecipes }) => {
           {formatISO9075(recipe.createdAt, { representation: "date" })}
         </p>
       </div>
-      {isOpen && (
-        <div>
-          <ConfirmModal setIsOpen={setIsOpen} handleDelete={handleDelete} />
-        </div>
-      )}
     </>
   );
 };

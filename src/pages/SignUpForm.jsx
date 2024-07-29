@@ -23,7 +23,7 @@ const SignUpForm = () => {
         password,
         passwordConfirmation,
       };
-      const res = await axios.post(`/users/register`, data);
+      const res = await axios.post(`/api/v1/users/register`, data);
       if (res.status >= 200 && res.status < 300) {
         toast.success("registered successfully");
         navigate("/sign-in");

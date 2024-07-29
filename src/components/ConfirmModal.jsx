@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
+
+import { createPortal } from "react-dom";
 import Button from "./Button";
 
-/* eslint-disable react/prop-types */
-const ConfirmModal = ({ setIsOpen, handleDelete }) => {
-  return (
+const ConfirmModal = ({ setIsModalOpen, handleDelete }) => {
+  return createPortal(
     <div
-      className="relative z-10"
+      className="relative z-50"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
@@ -14,7 +16,7 @@ const ConfirmModal = ({ setIsOpen, handleDelete }) => {
         aria-hidden="true"
       ></div>
 
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div className="fixed inset-0 z-50 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -56,14 +58,19 @@ const ConfirmModal = ({ setIsOpen, handleDelete }) => {
               <Button btnType={"normal"} fn={handleDelete} bg={true}>
                 Delete
               </Button>
-              <Button btnType={"normal"} fn={() => setIsOpen(false)} bg={false}>
+              <Button
+                btnType={"normal"}
+                fn={() => setIsModalOpen(false)}
+                bg={false}
+              >
                 Cancel
               </Button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 export default ConfirmModal;

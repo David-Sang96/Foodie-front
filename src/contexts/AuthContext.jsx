@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useReducer } from "react";
+import axios from "../helpers/axios";
 
 const AuthContext = createContext();
 
@@ -26,15 +27,17 @@ const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user) {
-        dispatch({
-          type: "login",
-          payload: user,
-        });
-      } else {
-        dispatch({ type: "logout" });
-      }
+      axios.get("/api/v1/users/is-auth").then((res) => {
+        const user = res.data;
+        if (user) {
+          dispatch({
+            type: "login",
+            payload: user,
+          });
+        } else {
+          dispatch({ type: "logout" });
+        }
+      });
     } catch (error) {
       dispatch({ type: "logout" });
     }

@@ -12,8 +12,8 @@ const IngredientCard = ({ ingredients, deleteAble, filteredOut }) => {
         ingredients.map((ingredient, i) => (
           <div key={i}>
             {deleteAble ? (
-              <div className="relative mt-3">
-                <span className="rounded-lg bg-orange p-3 text-sm text-white">
+              <div className="relative mt-2">
+                <span className="rounded-lg bg-orange px-3 py-2 pt-3 text-sm text-white">
                   {ingredient}
                 </span>
                 <RiDeleteBin5Fill

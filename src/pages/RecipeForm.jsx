@@ -5,6 +5,7 @@ import axios from "../helpers/axios";
 
 import { toast } from "react-toastify";
 import { default as BackBtn, default as Button } from "../components/Button";
+import FileUploadBtn from "../components/FileUploadBtn";
 import IngredientCard from "../components/IngredientCard";
 
 const RecipeForm = () => {
@@ -12,6 +13,9 @@ const RecipeForm = () => {
   const [description, setDescription] = useState("");
   const [newIngredient, setNewIngredient] = useState("");
   const [ingredients, setIngredients] = useState([]);
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
@@ -21,12 +25,13 @@ const RecipeForm = () => {
     try {
       setIsError(null);
       setIsLoading(true);
-      const res = await axios.get(`/recipes/${id}`);
+      const res = await axios.get(`/api/v1/recipes/${id}`);
       if (res.status >= 200 && res.status < 300) {
-        const { title, description, ingredients } = res.data;
+        const { title, description, ingredients, photo } = res.data;
         setTitle(title);
         setDescription(description);
         setIngredients(ingredients);
+        setFilePreview(`${import.meta.env.VITE_API_URL}${photo}`);
       }
     } catch (error) {
       setIsError(error.response.data);
@@ -43,6 +48,7 @@ const RecipeForm = () => {
       setDescription("");
       setIngredients([]);
       setIsError(null);
+      setFilePreview(null);
     }
   }, [id, getRecipe]);
 
@@ -67,8 +73,18 @@ const RecipeForm = () => {
         ingredients,
       };
       const res = id
-        ? await axios.patch(`/recipes/${id}`, recipe)
-        : await axios.post(`/recipes`, recipe);
+        ? await axios.patch(`/api/v1/recipes/${id}`, recipe)
+        : await axios.post(`/api/v1/recipes`, recipe);
+
+      // upload the image
+      const formData = new FormData();
+      formData.set("photo", file);
+
+      await axios.post(`/api/v1/recipes/${res.data._id}/upload`, formData, {
+        headers: {
+          Accept: "multipart/form-data",
+        },
+      });
 
       if (res.status >= 200 && res.status < 300) {
         toast.success(`${id ? "updated recipe" : "created recipe"}`);
@@ -107,6 +123,16 @@ const RecipeForm = () => {
     setIngredients((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const uploadImage = (e) => {
+    const chosenFile = e.target.files[0];
+    setFile(chosenFile);
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      setFilePreview(e.target.result);
+    };
+    fileReader.readAsDataURL(chosenFile);
+  };
+
   return (
     <div className="mx-auto max-w-md">
       <div className="flex justify-end pb-1">
@@ -116,15 +142,16 @@ const RecipeForm = () => {
         <h1 className="mb-2 text-center text-xl font-bold text-orange">
           Recipe {`${id ? "Update" : "Create"}`} Form
         </h1>
-        <form className="mt-3 space-y-5" onSubmit={handleSubmitForm}>
+        <form className="mt-3 space-y-4" onSubmit={handleSubmitForm}>
           <div className="space-y-2">
             <label
               htmlFor="title"
-              className="mb-2 block text-sm font-bold text-gray-700"
+              className="block text-sm font-bold text-gray-700"
             >
               Title
             </label>
             <input
+              required
               type="text"
               name="title"
               id="title"
@@ -144,7 +171,7 @@ const RecipeForm = () => {
               name="description"
               id="description"
               placeholder="description"
-              rows={5}
+              rows={4}
               className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessages("description") ? "border border-red-600" : ""}`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -156,6 +183,7 @@ const RecipeForm = () => {
             <label htmlFor="ingredient" className="font-medium">
               Ingredients
             </label>
+            {getErrorMessages("ingredients")}
             <div className="flex items-center gap-1">
               <input
                 type="text"
@@ -171,9 +199,6 @@ const RecipeForm = () => {
                 onClick={handleAddIngredients}
               />
             </div>
-
-            {getErrorMessages("ingredients")}
-
             <div className="flex flex-wrap gap-1">
               <IngredientCard
                 ingredients={ingredients}
@@ -182,6 +207,17 @@ const RecipeForm = () => {
               />
             </div>
           </div>
+
+          {getErrorMessages("photo")}
+          <div>
+            <FileUploadBtn onChange={uploadImage} />
+            {filePreview && (
+              <div className="mt-4">
+                <img src={filePreview} alt={"image"} className="rounded-md" />
+              </div>
+            )}
+          </div>
+
           <Button
             status={isLoading}
             bg={true}
