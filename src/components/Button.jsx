@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { RiArrowGoBackLine } from "react-icons/ri";
+import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 const Button = ({ btnType, fn, children, bg, status, type }) => {
@@ -8,7 +8,7 @@ const Button = ({ btnType, fn, children, bg, status, type }) => {
   if (btnType === "back") {
     return (
       <button title="back" onClick={() => navigate(-1)}>
-        <RiArrowGoBackLine className="rounded-md border border-white bg-orange py-1 text-3xl text-white hover:bg-amber-600" />
+        <IoMdArrowBack className="rounded-md border border-white bg-orange text-2xl text-white hover:bg-amber-600 md:text-3xl" />
       </button>
     );
   }

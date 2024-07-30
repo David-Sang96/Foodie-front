@@ -1,8 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App.jsx";
 import { useAuthContext } from "../contexts/AuthContext.jsx";
-import About from "../pages/About.jsx";
-import Contact from "../pages/Contact.jsx";
 import Home from "../pages/Home.jsx";
 import LoginForm from "../pages/LoginForm.jsx";
 import RecipeForm from "../pages/RecipeForm.jsx";
@@ -19,14 +17,6 @@ const Index = () => {
         {
           index: true,
           element: user ? <Home /> : <LoginForm />,
-        },
-        {
-          path: "/about",
-          element: user ? <About /> : <LoginForm />,
-        },
-        {
-          path: "/contact",
-          element: user ? <Contact /> : <LoginForm />,
         },
         {
           path: "/recipes/create",

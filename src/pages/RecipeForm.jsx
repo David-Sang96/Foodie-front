@@ -31,7 +31,7 @@ const RecipeForm = () => {
         setTitle(title);
         setDescription(description);
         setIngredients(ingredients);
-        setFilePreview(`${import.meta.env.VITE_API_URL}${photo}`);
+        setFilePreview(`${import.meta.env.VITE_API_ASSET_URL}${photo}`);
       }
     } catch (error) {
       setIsError(error.response.data);
@@ -138,11 +138,14 @@ const RecipeForm = () => {
       <div className="flex justify-end pb-1">
         <BackBtn btnType={"back"} />
       </div>
-      <div className="mb-4 rounded border-2 border-white bg-white p-4 px-8 pb-8 pt-6 shadow-md">
-        <h1 className="mb-2 text-center text-xl font-bold text-orange">
+      <div className="mb-4 rounded border-2 border-white bg-white p-2 shadow-md md:p-4">
+        <h1 className="mb-2 text-center text-lg font-bold text-orange md:text-xl">
           Recipe {`${id ? "Update" : "Create"}`} Form
         </h1>
-        <form className="mt-3 space-y-4" onSubmit={handleSubmitForm}>
+        <form
+          className="mt-3 space-y-3 md:space-y-4"
+          onSubmit={handleSubmitForm}
+        >
           <div className="space-y-2">
             <label
               htmlFor="title"
@@ -156,7 +159,7 @@ const RecipeForm = () => {
               name="title"
               id="title"
               placeholder="title"
-              className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessages("title") ? "border border-red-600" : ""}`}
+              className={`focus:shadow-outline w-full appearance-none rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base ${getErrorMessages("title") ? "border border-red-600" : ""}`}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -172,7 +175,7 @@ const RecipeForm = () => {
               id="description"
               placeholder="description"
               rows={4}
-              className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessages("description") ? "border border-red-600" : ""}`}
+              className={`focus:shadow-outline w-full appearance-none rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base ${getErrorMessages("description") ? "border border-red-600" : ""}`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
@@ -190,12 +193,12 @@ const RecipeForm = () => {
                 name="ingredient"
                 id="ingredient"
                 placeholder="ingredient"
-                className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                className="focus:shadow-outline w-full appearance-none rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base"
                 value={newIngredient}
                 onChange={(e) => setNewIngredient(e.target.value)}
               />
               <IoIosAddCircle
-                className="cursor-pointer text-3xl text-orange"
+                className="cursor-pointer text-2xl text-orange md:text-3xl"
                 onClick={handleAddIngredients}
               />
             </div>
@@ -224,13 +227,37 @@ const RecipeForm = () => {
             btnType={"formBtn"}
             type={"submit"}
           >
-            {isLoading
-              ? id
-                ? "Updating ..."
-                : "Creating ..."
-              : id
-                ? "Update"
-                : "Create"}
+            <div className="flex items-center justify-center text-sm font-bold md:text-base">
+              {isLoading && (
+                <svg
+                  className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              )}
+              {isLoading
+                ? id
+                  ? "Updating ..."
+                  : "Creating ..."
+                : id
+                  ? "Update"
+                  : "Create"}
+            </div>
           </Button>
         </form>
       </div>

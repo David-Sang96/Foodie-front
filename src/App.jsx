@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./components/NavBar";
+import Navbar2 from "./components/NavBar2";
 import ToastProvider from "./components/ToastProvider";
 
 function App() {
   return (
     <>
       <ToastProvider />
-      <Navbar />
-      <div className="p-5">
+      <Navbar2 />
+      <div className="p-2 md:p-5">
         <Outlet />
       </div>
     </>

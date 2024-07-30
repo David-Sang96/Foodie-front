@@ -8,6 +8,16 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, dispatch } = useAuthContext();
 
+  const LoggedLinks = [
+    { name: "Home", to: "/" },
+    { name: "Create", to: "/recipes/create" },
+  ];
+
+  const unLoggedLinks = [
+    { name: "Register", to: "/sign-up" },
+    { name: "Login", to: "/sign-in" },
+  ];
+
   const handleLogout = () => {
     dispatch({ type: "logout" });
     navigate("/sign-in");
@@ -15,59 +25,44 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 flex items-center justify-between p-5 backdrop-blur-md">
+    <nav className="sticky top-0 flex items-center justify-between p-3 backdrop-blur-md md:p-5">
       <div>
         <Link to={"/"} className="flex items-center justify-center gap-1">
-          <GiCook className="text-xl text-orange md:text-4xl" />
-          <h1 className="text-xl font-bold text-orange md:text-3xl">Recipes</h1>
+          <GiCook className="text-3xl text-orange md:text-4xl" />
+          <h1 className="hidden text-xl font-bold text-orange md:block md:text-2xl">
+            Recipes
+          </h1>
         </Link>
       </div>
-      <ul className="flex space-x-10">
-        {user !== null && (
-          <>
-            <li>
-              <NavLink to={"/"} className="hover:text-orange">
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={"/about"} className="hover:text-orange">
-                About
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={"/contact"} className="hover:text-orange">
-                Contact
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={"/recipes/create"} className="hover:text-orange">
-                Create Recipe
-              </NavLink>
-            </li>
-          </>
-        )}
+
+      <ul className="flex items-center justify-center md:space-x-10">
         {user === null && (
           <>
-            <li>
-              <NavLink to={"/sign-up"} className="hover:text-orange">
-                Register
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={"/sign-in"} className="hover:text-orange">
-                Login
-              </NavLink>
-            </li>
+            {unLoggedLinks.map((link) => (
+              <li key={link.name}>
+                <NavLink to={link.to} className="hover:text-orange">
+                  {link.name}
+                </NavLink>
+              </li>
+            ))}
           </>
         )}
 
         {user !== null && (
-          <li>
-            <button className="hover:text-orange" onClick={handleLogout}>
-              Logout
-            </button>
-          </li>
+          <>
+            {LoggedLinks.map((link) => (
+              <li key={link.name}>
+                <NavLink to={link.to} className="hover:text-orange">
+                  {link.name}
+                </NavLink>
+              </li>
+            ))}
+            <li>
+              <button className="hover:text-orange" onClick={handleLogout}>
+                Logout
+              </button>
+            </li>
+          </>
         )}
       </ul>
     </nav>

@@ -12,7 +12,7 @@ const IngredientCard = ({ ingredients, deleteAble, filteredOut }) => {
         ingredients.map((ingredient, i) => (
           <div key={i}>
             {deleteAble ? (
-              <div className="relative mt-2">
+              <div className="relative mt-4">
                 <span className="rounded-lg bg-orange px-3 py-2 pt-3 text-sm text-white">
                   {ingredient}
                 </span>
