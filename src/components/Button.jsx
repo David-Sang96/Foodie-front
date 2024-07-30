@@ -17,7 +17,7 @@ const Button = ({ btnType, fn, children, bg, status, type }) => {
     return (
       <button
         type="button"
-        className={`0 inline-flex w-full justify-center rounded-md ${bg ? "bg-orange text-white" : ""} border px-3 py-2 text-sm font-semibold hover:bg-amber-600 hover:text-white sm:ml-3 sm:w-auto`}
+        className={`0 inline-flex w-full justify-center rounded-md ${bg ? "bg-orange text-white" : ""} border px-4 py-2 text-sm font-semibold hover:bg-amber-600 hover:text-white sm:ml-3 sm:w-auto`}
         onClick={fn}
       >
         {children}

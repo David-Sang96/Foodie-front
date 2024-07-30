@@ -16,7 +16,6 @@ const authReducer = (state, action) => {
       return { user: action.payload };
     case "logout":
       localStorage.removeItem("user");
-      localStorage.removeItem("token");
       return initialState;
     default:
       return state;
@@ -30,7 +29,8 @@ const AuthContextProvider = ({ children }) => {
     try {
       axios.get("/api/v1/users/is-auth").then((res) => {
         const user = res.data;
-        if (user) {
+        const localUser = JSON.parse(localStorage.getItem("user"));
+        if (user && localUser) {
           dispatch({
             type: "login",
             payload: user,
@@ -40,6 +40,7 @@ const AuthContextProvider = ({ children }) => {
         }
       });
     } catch (error) {
+      console.error("Error checking authentication:", error);
       dispatch({ type: "logout" });
     }
   }, []);

@@ -30,8 +30,12 @@ const LoginForm = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("something went wrong");
-      setIsError(error.response.data);
+      if (error.response && error.response.status === 429) {
+        toast.error(`${error.response.data.message}`);
+      } else {
+        toast.error("something went wrong");
+        setIsError(error.response.data);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +76,7 @@ const LoginForm = () => {
         <div className="mb-4">
           <label
             className="mb-2 block text-sm font-bold text-gray-700"
-            htmlFor="username"
+            htmlFor="email"
           >
             Email
           </label>
