@@ -79,6 +79,8 @@ const Home = () => {
 
   if (isLoading) return <Loader />;
 
+  if (isError) return <p>{isError.message}</p>;
+
   return (
     <>
       <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">

@@ -8,7 +8,7 @@ const Button = ({ btnType, fn, children, bg, status, type }) => {
   if (btnType === "back") {
     return (
       <button title="back" onClick={() => navigate(-1)}>
-        <IoMdArrowBack className="rounded-md border border-white bg-orange text-2xl text-white hover:bg-amber-600 md:text-3xl" />
+        <IoMdArrowBack className="rounded-md border border-white bg-orange text-2xl text-white hover:bg-amber-600 md:text-4xl" />
       </button>
     );
   }

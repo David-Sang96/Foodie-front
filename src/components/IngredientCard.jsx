@@ -8,7 +8,7 @@ const IngredientCard = ({ ingredients, deleteAble, filteredOut }) => {
 
   return (
     <>
-      {ingredients.length > 0 &&
+      {ingredients?.length > 0 &&
         ingredients.map((ingredient, i) => (
           <div key={i}>
             {deleteAble ? (

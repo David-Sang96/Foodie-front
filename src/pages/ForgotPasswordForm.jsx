@@ -19,6 +19,7 @@ const ForgotPasswordForm = () => {
 
       if (res.status >= 200 && res.status < 300) {
         toast.success("Check your email");
+        navigate("/sign-in");
       }
     } catch (error) {
       console.log(error);
@@ -52,7 +53,7 @@ const ForgotPasswordForm = () => {
   };
 
   return (
-    <div className="mx-auto md:w-[500px]">
+    <div className="mx-auto mt-9 sm:w-[500px]">
       <form
         className="mb-4 rounded bg-white p-3 shadow-md md:px-8 md:pb-8 md:pt-6"
         onSubmit={handleSubmit}
