@@ -66,25 +66,23 @@ const RecipeForm = () => {
     try {
       setIsError(null);
       setIsLoading(true);
+      if (title.length < 5)
+        return toast.error("title must be at least 5 words");
 
-      const recipe = {
-        title,
-        description,
-        ingredients,
-      };
-      const res = id
-        ? await axios.patch(`/api/v1/recipes/${id}`, recipe)
-        : await axios.post(`/api/v1/recipes`, recipe);
-
-      // upload the image
+      if (title === "" || description === "" || ingredients.length < 3) {
+        return toast.error(
+          "Please fill up all fields and at least 3 ingredients",
+        );
+      }
       const formData = new FormData();
-      formData.set("photo", file);
+      formData.append("photo", file);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("ingredients", JSON.stringify(ingredients));
 
-      await axios.post(`/api/v1/recipes/${res.data._id}/upload`, formData, {
-        headers: {
-          Accept: "multipart/form-data",
-        },
-      });
+      const res = id
+        ? await axios.patch(`/api/v1/recipes/${id}`, formData)
+        : await axios.post(`/api/v1/recipes`, formData);
 
       if (res.status >= 200 && res.status < 300) {
         toast.success(`${id ? "updated recipe" : "created recipe"}`);
@@ -145,6 +143,7 @@ const RecipeForm = () => {
         <form
           className="mt-3 space-y-3 md:space-y-4"
           onSubmit={handleSubmitForm}
+          encType="multipart/form-data"
         >
           <div className="space-y-2">
             <label

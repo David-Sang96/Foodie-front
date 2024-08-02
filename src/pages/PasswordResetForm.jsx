@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { toast } from "react-toastify";
+import fetchErrorMsg from "../components/fetchErrorMsg";
 import axios from "../helpers/axios";
 
 const PasswordResetForm = () => {
@@ -34,28 +35,6 @@ const PasswordResetForm = () => {
     }
   };
 
-  const getErrorMessages = (field) => {
-    if (isError && isError.message) {
-      if (
-        typeof isError.message === "object" &&
-        isError.message.path === field
-      ) {
-        return (
-          <p className="text-xs font-medium italic text-red-500">
-            {isError.message.msg}
-          </p>
-        );
-      } else if (typeof isError.message === "string") {
-        return (
-          <p className="text-xs font-medium italic text-red-500">
-            {isError.message}
-          </p>
-        );
-      }
-    }
-    return null;
-  };
-
   return (
     <div className="mx-auto mt-9 sm:w-[500px]">
       <form
@@ -71,7 +50,7 @@ const PasswordResetForm = () => {
             Password
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border ${getErrorMessages("password") ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
+            className={`focus:shadow-outline mb-3 w-full rounded border ${fetchErrorMsg("password") ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
             id="password"
             name="password"
             type="text"
@@ -79,7 +58,7 @@ const PasswordResetForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {getErrorMessages("password")}
+          {fetchErrorMsg("password", isError)}
         </div>
         <div className="mb-6">
           <label
@@ -89,7 +68,7 @@ const PasswordResetForm = () => {
             Confirm Password
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border ${getErrorMessages("passwordConfirmation") ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
+            className={`focus:shadow-outline mb-3 w-full rounded border ${fetchErrorMsg("passwordConfirmation") ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
             id="passwordConfirmation"
             name="passwordConfirmation"
             type="text"
@@ -97,7 +76,7 @@ const PasswordResetForm = () => {
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
           />
-          {getErrorMessages("passwordConfirmation")}
+          {fetchErrorMsg("passwordConfirmation", isError)}
         </div>
         <div>
           <button

@@ -6,6 +6,7 @@ import ForgotPasswordForm from "../pages/ForgotPasswordForm.jsx";
 import Home from "../pages/Home.jsx";
 import LoginForm from "../pages/LoginForm.jsx";
 import PasswordResetForm from "../pages/PasswordResetForm.jsx";
+import Profile from "../pages/Profile.jsx";
 import RecipeForm from "../pages/RecipeForm.jsx";
 import SignUpForm from "../pages/SignUpForm.jsx";
 
@@ -32,6 +33,10 @@ const Index = () => {
         {
           path: "/recipes/:id",
           element: user ? <Detail /> : <LoginForm />,
+        },
+        {
+          path: "/user/profile",
+          element: user ? <Profile /> : <LoginForm />,
         },
         {
           path: "/sign-up",

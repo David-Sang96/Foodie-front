@@ -8,7 +8,6 @@ import Loader from "../components/Loader";
 import axios from "../helpers/axios";
 
 const Detail = () => {
-  // const { title, description, ingredients, _id, photo } = recipe;
   const [recipe, getRecipe] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
@@ -66,7 +65,7 @@ const Detail = () => {
           </p>
           <p>
             <span> Published at - </span>
-            {createdAt ? format(createdAt, "HH:mm:ss aa") : "N/A"}
+            {createdAt ? format(createdAt, "h:mm:ss aa") : "N/A"}
           </p>
         </div>
       </div>

@@ -15,6 +15,7 @@ const Navbar = () => {
   const { user, dispatch } = useAuthContext();
 
   const LoggedLinks = [
+    { name: "Profile", to: "/user/profile" },
     { name: "Home", to: "/" },
     { name: "Create", to: "/recipes/create" },
   ];
@@ -50,7 +51,7 @@ const Navbar = () => {
           </div>
         )}
         <ul
-          className={`absolute left-0 w-full py-12 pl-9 text-orange backdrop-blur-lg transition-all duration-500 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:space-x-5 md:py-0 md:pb-0 md:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
+          className={`absolute left-0 w-full py-10 text-orange backdrop-blur-lg transition-all duration-500 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:space-x-4 md:py-0 md:pb-0 md:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
         >
           {user !== null && (
             <>
@@ -70,7 +71,7 @@ const Navbar = () => {
               ))}
               <li className="pr-10 text-end md:pr-0 md:text-lg">
                 <button
-                  className="btn rounded bg-orange px-3 py-1 font-semibold text-white duration-500 md:static md:ml-8 md:font-normal"
+                  className="btn rounded bg-orange px-3 py-1 font-semibold text-white duration-500 md:static md:font-normal"
                   onClick={handleLogout}
                 >
                   Logout

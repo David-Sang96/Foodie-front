@@ -1,58 +1,70 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+
+import { format } from "date-fns";
+import Button from "../components/Button";
 import fetchErrorMsg from "../components/fetchErrorMsg";
+import Loader from "../components/Loader";
 import axios from "../helpers/axios";
 
-const SignUpForm = () => {
+const Profile = () => {
+  const [user, setUser] = useState({});
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
-  const navigate = useNavigate();
+  const { createdAt } = user;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setIsError(null);
-      setIsLoading(true);
-      const data = {
-        username,
-        email,
-        password,
-        passwordConfirmation,
-      };
-      const res = await axios.post(`/api/v1/users/register`, data);
-      if (res.status >= 200 && res.status < 300) {
-        toast.success("registered successfully");
-        navigate("/sign-in");
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setIsError(null);
+        setIsLoading(true);
+        const res = await axios.get("/api/v1/profile");
+        if (res.status >= 200 && res.status < 300) {
+          setUser(res.data.user);
+          setUsername(res.data.user.username);
+        }
+      } catch (error) {
+        setIsError(error.response.data);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+    fetchUser();
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
 
+  if (isLoading) return <Loader />;
+
   return (
-    <div className="m-auto mt-10 w-full max-w-md">
+    <div className="m-auto mt-5 w-full max-w-md">
+      <div className="flex justify-end pb-1">
+        <Button btnType={"back"} />
+      </div>
       <form
         className="mb-4 rounded bg-white p-2 shadow-md md:px-8 md:pb-8 md:pt-6"
         onSubmit={handleSubmit}
       >
-        <h1 className="mb-6 text-center text-xl font-bold text-orange">
-          Register Form
-        </h1>
+        <div>
+          <h1 className="mb-1 text-xl font-bold text-orange">
+            Your Profile Details
+          </h1>
+          <p className="mb-3 text-sm">
+            <span> Created on : </span>
+            {createdAt
+              ? `${format(createdAt, "MM-dd-yyyy")} ( ${format(createdAt, "h:mm aa")} )`
+              : "N/A"}
+          </p>
+        </div>
         <div className="mb-4">
           <label
             className="mb-2 block text-sm font-bold text-gray-700"
             htmlFor="username"
           >
-            Username
+            Your Name
           </label>
           <input
             className={`focus:shadow-outline mb-3 w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("username") ? "border-red-500" : ""}`}
@@ -64,24 +76,6 @@ const SignUpForm = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
           {fetchErrorMsg("username", isError)}
-        </div>
-        <div className="mb-4">
-          <label
-            className="mb-2 block text-sm font-bold text-gray-700"
-            htmlFor="username"
-          >
-            Email
-          </label>
-          <input
-            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("email") ? "border-red-500" : ""}`}
-            id="email"
-            name="email"
-            type="email"
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {fetchErrorMsg("email", isError)}
         </div>
         <div className="mb-6">
           <label
@@ -101,24 +95,7 @@ const SignUpForm = () => {
           />
           {fetchErrorMsg("password", isError)}
         </div>
-        <div className="mb-6">
-          <label
-            className="mb-2 block text-sm font-bold text-gray-700"
-            htmlFor="passwordConfirmation"
-          >
-            Confirm Password
-          </label>
-          <input
-            className={`focus:shadow-outline mb-3 w-full rounded border ${fetchErrorMsg("passwordConfirmation") ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
-            id="passwordConfirmation"
-            name="passwordConfirmation"
-            type="text"
-            placeholder="******************"
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-          />
-          {fetchErrorMsg("passwordConfirmation", isError)}
-        </div>
+
         <div className="flex flex-col items-center justify-between gap-4">
           <button
             className={`item-center focus:shadow-outline flex w-full justify-center rounded bg-orange px-4 py-2 font-bold text-white hover:bg-amber-600 focus:outline-none ${isLoading ? "cursor-not-allowed" : ""}`}
@@ -147,21 +124,21 @@ const SignUpForm = () => {
                 ></path>
               </svg>
             )}
-            {isLoading ? "Registering ..." : " Register"}
+            {isLoading ? "Updating ..." : " Update Profile"}
           </button>
-          <div className="flex w-full justify-between gap-2 space-x-2 md:block md:text-center">
-            <span className="text-sm">Already have account?</span>
-            <Link
-              to={"/sign-in"}
-              className="inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"
-            >
-              Login Here
-            </Link>
-          </div>
+          {/* <div className="flex w-full justify-between gap-2 space-x-2 md:block md:text-center">
+        <span className="text-sm">Already have account?</span>
+        <Link
+          to={"/sign-in"}
+          className="inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"
+        >
+          Login Here
+        </Link>
+      </div> */}
         </div>
       </form>
     </div>
   );
 };
 
-export default SignUpForm;
+export default Profile;

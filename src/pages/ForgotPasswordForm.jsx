@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import fetchErrorMsg from "../components/fetchErrorMsg";
 import axios from "../helpers/axios";
 
 const ForgotPasswordForm = () => {
@@ -30,28 +31,6 @@ const ForgotPasswordForm = () => {
     }
   };
 
-  const getErrorMessage = (field) => {
-    if (isError && isError.message) {
-      if (
-        typeof isError.message === "object" &&
-        isError.message.path === field
-      ) {
-        return (
-          <p className="text-xs font-medium italic text-red-500">
-            {isError.message.msg}
-          </p>
-        );
-      } else if (typeof isError.message === "string") {
-        return (
-          <p className="text-xs font-medium italic text-red-500">
-            {isError.message}
-          </p>
-        );
-      }
-    }
-    return null;
-  };
-
   return (
     <div className="mx-auto mt-9 sm:w-[500px]">
       <form
@@ -63,14 +42,14 @@ const ForgotPasswordForm = () => {
         </h2>
 
         <input
-          className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessage("email") ? "border-red-500" : ""}`}
+          className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("email") ? "border-red-500" : ""}`}
           name="email"
           type="email"
           placeholder="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        {getErrorMessage("email")}
+        {fetchErrorMsg("email", isError)}
         <div className="flex justify-end gap-3">
           <button
             className="rounded border border-orange bg-transparent px-4 py-1 font-semibold text-orange hover:border-transparent hover:bg-orange hover:text-white"

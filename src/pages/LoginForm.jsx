@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import fetchErrorMsg from "../components/fetchErrorMsg";
 import { useAuthContext } from "../contexts/AuthContext";
 import axios from "../helpers/axios";
 
@@ -41,29 +42,6 @@ const LoginForm = () => {
     }
   };
 
-  const getErrorMessage = (field) => {
-    if (isError && isError.message) {
-      // Check if `isError.message` is an object and has `path` and `msg`
-      if (
-        typeof isError.message === "object" &&
-        isError.message.path === field
-      ) {
-        return (
-          <p className="text-xs font-medium italic text-red-500">
-            {isError.message.msg}
-          </p>
-        );
-      } else if (typeof isError.message === "string") {
-        return (
-          <p className="text-xs font-medium italic text-red-500">
-            {isError.message}
-          </p>
-        );
-      }
-    }
-    return null;
-  };
-
   return (
     <div className="m-auto mt-10 w-full max-w-md">
       <form
@@ -81,7 +59,7 @@ const LoginForm = () => {
             Email
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessage("email") ? "border-red-500" : ""}`}
+            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("email") ? "border-red-500" : ""}`}
             id="email"
             name="email"
             type="email"
@@ -89,7 +67,7 @@ const LoginForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {getErrorMessage("email")}
+          {fetchErrorMsg("email", isError)}
         </div>
         <div className="mb-6">
           <label
@@ -99,7 +77,7 @@ const LoginForm = () => {
             Password
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${getErrorMessage("password") ? "border-red-500" : ""}`}
+            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("password") ? "border-red-500" : ""}`}
             id="password"
             name="password"
             type="text"
@@ -107,7 +85,7 @@ const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {getErrorMessage("password")}
+          {fetchErrorMsg("password", isError)}
         </div>
         <div className="flex flex-col items-center justify-between gap-4">
           <Link
