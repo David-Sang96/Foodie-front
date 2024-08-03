@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { BiBookmarkHeart } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 
+import { toast } from "react-toastify";
 import Button from "../components/Button";
 import IngredientCard from "../components/IngredientCard";
 import Loader from "../components/Loader";
@@ -26,6 +27,7 @@ const Detail = () => {
           getRecipe(res.data);
         }
       } catch (error) {
+        console.log(error.response.data);
         setIsError(error.response.data);
       } finally {
         setIsLoading(false);
@@ -35,11 +37,24 @@ const Detail = () => {
     fetchData();
   }, [id]);
 
-  const handleAddFavorite = () => {};
+  const handleAddFavorite = async () => {
+    try {
+      const data = {
+        recipeId: id,
+      };
+      const res = await axios.post("/api/v1/favorite", data);
+      if (res.status >= 200 && res.status < 300) {
+        toast.success("Added to favorite successfully");
+      }
+    } catch (error) {
+      setIsError(error.response.data);
+      toast.error(error.response.data.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (isLoading) return <Loader />;
-
-  if (isError) return <p>{isError.message}</p>;
 
   return (
     <div className="sm:mx-auto lg:w-[1000px]">
@@ -55,7 +70,7 @@ const Detail = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-orange md:text-xl">{title}</h3>
           <BiBookmarkHeart
-            className="cursor-pointer text-2xl text-orange"
+            className="cursor-pointer text-2xl text-orange md:text-3xl"
             onClick={handleAddFavorite}
           />
         </div>

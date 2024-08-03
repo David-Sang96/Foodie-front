@@ -223,7 +223,11 @@ const RecipeForm = () => {
             <FileUploadBtn onChange={uploadImage} require={true} />
             {filePreview && (
               <div className="mt-4">
-                <img src={filePreview} alt={"image"} className="rounded-md" />
+                <img
+                  src={filePreview}
+                  alt={"image"}
+                  className="mx-auto h-36 rounded-md"
+                />
               </div>
             )}
           </div>

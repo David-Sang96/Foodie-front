@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 
 const Pagination = ({ totalPages, currentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  console.log(currentPage);
 
   const handlePageNum = (value) => {
     if (value < 1 || value > totalPages) return;

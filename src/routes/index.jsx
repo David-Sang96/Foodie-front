@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App.jsx";
 import { useAuthContext } from "../contexts/AuthContext.jsx";
 import Detail from "../pages/Detail.jsx";
+import Favorite from "../pages/Favorite.jsx";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm.jsx";
 import Home from "../pages/Home.jsx";
 import LoginForm from "../pages/LoginForm.jsx";
@@ -42,6 +43,10 @@ const Index = () => {
         {
           path: "/user/profile/update",
           element: user ? <PasswordUpdateForm /> : <LoginForm />,
+        },
+        {
+          path: "/recipes/favorite",
+          element: user ? <Favorite /> : <LoginForm />,
         },
         {
           path: "/sign-up",

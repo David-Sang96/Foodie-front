@@ -48,7 +48,7 @@ const Home = () => {
 
   useEffect(() => {
     getRecipes();
-  }, [page, getRecipes]);
+  }, [getRecipes]);
 
   const filterRecipes = (id) => {
     if (resData.recipes.length === 1 && page > 1) {

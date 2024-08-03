@@ -17,9 +17,10 @@ const Navbar = () => {
   const { user, dispatch } = useAuthContext();
 
   const LoggedLinks = [
-    { name: "Profile", to: "/user/profile" },
     { name: "Home", to: "/" },
+    { name: "Favorite", to: "/recipes/favorite" },
     { name: "Create", to: "/recipes/create" },
+    { name: "Profile", to: "/user/profile" },
   ];
 
   const handleLogout = async () => {
@@ -44,7 +45,7 @@ const Navbar = () => {
 
   return (
     <nav className="sticky right-0 top-0 w-full">
-      <div className="items-center justify-between bg-white px-3 py-3 md:flex md:px-5">
+      <div className="items-center justify-between bg-white px-3 py-3 lg:flex lg:px-5">
         <div className="flex items-center gap-5">
           <Link to={"/"} className="flex cursor-pointer items-center gap-1">
             <GiCook className="text-3xl text-orange md:text-4xl" />
@@ -57,19 +58,19 @@ const Navbar = () => {
               image ? `${import.meta.env.VITE_API_ASSET_URL}${image}` : avatar
             }
             alt="profile image"
-            className="h-10 w-10 rounded-full border-2 border-orange object-cover md:hidden"
+            className="h-10 w-10 rounded-full border-2 border-orange object-cover md:h-12 md:w-12 lg:hidden"
           />
         </div>
         {user !== null && (
           <div
             onClick={() => setOpen((prev) => !prev)}
-            className="absolute right-3 top-4 cursor-pointer text-3xl text-orange md:hidden"
+            className="absolute right-3 top-4 cursor-pointer text-3xl text-orange md:text-4xl lg:hidden"
           >
             {open ? <AiOutlineClose /> : <HiMenuAlt3 />}
           </div>
         )}
         <ul
-          className={`absolute left-0 w-full py-10 text-orange backdrop-blur-lg transition-all duration-500 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:space-x-4 md:py-0 md:pb-0 md:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
+          className={`absolute left-0 w-full py-10 text-orange backdrop-blur-lg transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
         >
           {user !== null && (
             <>
@@ -80,12 +81,12 @@ const Navbar = () => {
                     : avatar
                 }
                 alt="profile image"
-                className="hidden h-12 w-12 rounded-full border-2 border-orange object-cover md:block"
+                className="hidden h-12 w-12 rounded-full border-2 border-orange object-cover lg:block"
               />
               {LoggedLinks.map((link) => (
                 <li
                   key={link.name}
-                  className="pb-4 pr-16 text-end font-bold text-orange md:pb-0 md:pr-0 md:text-lg md:font-normal md:text-black"
+                  className="pb-4 pr-16 text-end font-bold text-orange lg:pb-0 lg:pr-0 lg:text-lg lg:font-normal lg:text-black"
                 >
                   <NavLink
                     to={link.to}
@@ -96,9 +97,9 @@ const Navbar = () => {
                   </NavLink>
                 </li>
               ))}
-              <li className="pr-10 text-end md:pr-0 md:text-lg">
+              <li className="pr-10 text-end lg:pr-0 lg:text-lg">
                 <button
-                  className="btn rounded bg-orange px-3 py-1 font-semibold text-white duration-500 md:static md:font-normal"
+                  className="btn rounded bg-orange px-3 py-1 font-semibold text-white duration-500 lg:static lg:font-normal"
                   onClick={handleLogout}
                 >
                   Logout
@@ -107,7 +108,6 @@ const Navbar = () => {
             </>
           )}
         </ul>
-        {/* button */}
       </div>
     </nav>
   );
