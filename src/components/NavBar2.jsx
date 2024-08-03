@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { GiCook } from "react-icons/gi";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuthContext } from "../contexts/AuthContext";
 
+import avatar from "../assets/avatar.jpg";
+import { useAuthContext } from "../contexts/AuthContext";
 import axios from "../helpers/axios.js";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const { user, dispatch } = useAuthContext();
 
@@ -35,13 +37,29 @@ const Navbar = () => {
     }
   };
 
+  useEffect(() => {
+    const localUser = JSON.parse(localStorage.getItem("user"))?.photo;
+    setImage(localUser);
+  }, [user]);
+
   return (
     <nav className="sticky right-0 top-0 w-full">
-      <div className="items-center justify-between bg-white px-3 py-4 md:flex md:px-10">
-        <Link to={"/"} className="flex cursor-pointer items-center gap-1">
-          <GiCook className="text-3xl text-orange md:text-4xl" />
-          <h1 className="text-xl font-bold text-orange md:text-3xl">Recipes</h1>
-        </Link>
+      <div className="items-center justify-between bg-white px-3 py-3 md:flex md:px-5">
+        <div className="flex items-center gap-5">
+          <Link to={"/"} className="flex cursor-pointer items-center gap-1">
+            <GiCook className="text-3xl text-orange md:text-4xl" />
+            <h1 className="text-xl font-bold text-orange md:text-3xl">
+              Recipes
+            </h1>
+          </Link>
+          <img
+            src={
+              image ? `${import.meta.env.VITE_API_ASSET_URL}${image}` : avatar
+            }
+            alt="profile image"
+            className="h-10 w-10 rounded-full border-2 border-orange object-cover md:hidden"
+          />
+        </div>
         {user !== null && (
           <div
             onClick={() => setOpen((prev) => !prev)}
@@ -55,6 +73,15 @@ const Navbar = () => {
         >
           {user !== null && (
             <>
+              <img
+                src={
+                  image
+                    ? `${import.meta.env.VITE_API_ASSET_URL}${image}`
+                    : avatar
+                }
+                alt="profile image"
+                className="hidden h-12 w-12 rounded-full border-2 border-orange object-cover md:block"
+              />
               {LoggedLinks.map((link) => (
                 <li
                   key={link.name}
@@ -62,7 +89,7 @@ const Navbar = () => {
                 >
                   <NavLink
                     to={link.to}
-                    className="hover:text-orange"
+                    className="transition-all duration-500 ease-out hover:text-orange"
                     onClick={() => setOpen((prev) => !prev)}
                   >
                     {link.name}

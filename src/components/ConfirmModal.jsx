@@ -3,7 +3,7 @@
 import { createPortal } from "react-dom";
 import Button from "./Button";
 
-const ConfirmModal = ({ setIsModalOpen, handleDelete }) => {
+const ConfirmModal = ({ setIsModalOpen, handleDelete, name, children }) => {
   return createPortal(
     <div
       className="relative z-50"
@@ -42,14 +42,10 @@ const ConfirmModal = ({ setIsModalOpen, handleDelete }) => {
                     className="text-base font-semibold leading-6 text-gray-900"
                     id="modal-title"
                   >
-                    Delete Recipe
+                    {name}
                   </h3>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Are you sure you want to delete your recipe? All of your
-                      data will be permanently removed. This action cannot be
-                      undone.
-                    </p>
+                    <p className="text-sm text-gray-500">{children}</p>
                   </div>
                 </div>
               </div>

@@ -1,7 +1,8 @@
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import { BiBookmarkHeart } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 
-import { format } from "date-fns";
 import Button from "../components/Button";
 import IngredientCard from "../components/IngredientCard";
 import Loader from "../components/Loader";
@@ -34,6 +35,8 @@ const Detail = () => {
     fetchData();
   }, [id]);
 
+  const handleAddFavorite = () => {};
+
   if (isLoading) return <Loader />;
 
   if (isError) return <p>{isError.message}</p>;
@@ -51,6 +54,10 @@ const Detail = () => {
         />
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-orange md:text-xl">{title}</h3>
+          <BiBookmarkHeart
+            className="cursor-pointer text-2xl text-orange"
+            onClick={handleAddFavorite}
+          />
         </div>
 
         <p className="break-words text-sm md:text-base">{description}</p>

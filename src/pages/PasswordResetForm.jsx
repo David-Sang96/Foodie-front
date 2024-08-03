@@ -106,7 +106,7 @@ const PasswordResetForm = () => {
                   ></path>
                 </svg>
               )}
-              {isLoading ? "Sending ..." : "Send"}
+              {isLoading ? "Submitting ..." : "Submit"}
             </div>{" "}
           </button>
         </div>

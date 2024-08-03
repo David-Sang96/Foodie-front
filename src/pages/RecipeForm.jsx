@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "../helpers/axios";
 
 import { toast } from "react-toastify";
+import { twMerge } from "tailwind-merge";
 import { default as BackBtn, default as Button } from "../components/Button";
 import FileUploadBtn from "../components/FileUploadBtn";
 import IngredientCard from "../components/IngredientCard";
@@ -91,7 +92,7 @@ const RecipeForm = () => {
     } catch (error) {
       console.log(error);
       setIsError(error.response.data);
-      if (error.response?.data?.message) {
+      if (error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Something went wrong");
@@ -125,11 +126,12 @@ const RecipeForm = () => {
     const chosenFile = e.target.files[0];
     setFile(chosenFile);
     const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      setFilePreview(e.target.result);
-    };
+    fileReader.onload = (e) => setFilePreview(e.target.result);
     fileReader.readAsDataURL(chosenFile);
   };
+
+  const inputClass =
+    "focus:shadow-outline w-full  rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base";
 
   return (
     <div className="mx-auto max-w-md">
@@ -158,7 +160,10 @@ const RecipeForm = () => {
               name="title"
               id="title"
               placeholder="title"
-              className={`focus:shadow-outline w-full appearance-none rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base ${getErrorMessages("title") ? "border border-red-600" : ""}`}
+              className={twMerge(
+                inputClass,
+                getErrorMessages("title") ? "border border-red-600" : "",
+              )}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -174,7 +179,10 @@ const RecipeForm = () => {
               id="description"
               placeholder="description"
               rows={4}
-              className={`focus:shadow-outline w-full appearance-none rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base ${getErrorMessages("description") ? "border border-red-600" : ""}`}
+              className={twMerge(
+                inputClass,
+                getErrorMessages("description") ? "border border-red-600" : "",
+              )}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
@@ -192,7 +200,7 @@ const RecipeForm = () => {
                 name="ingredient"
                 id="ingredient"
                 placeholder="ingredient"
-                className="focus:shadow-outline w-full appearance-none rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base"
+                className={inputClass}
                 value={newIngredient}
                 onChange={(e) => setNewIngredient(e.target.value)}
               />
@@ -212,7 +220,7 @@ const RecipeForm = () => {
 
           {getErrorMessages("photo")}
           <div>
-            <FileUploadBtn onChange={uploadImage} />
+            <FileUploadBtn onChange={uploadImage} require={true} />
             {filePreview && (
               <div className="mt-4">
                 <img src={filePreview} alt={"image"} className="rounded-md" />

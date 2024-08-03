@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import { twMerge } from "tailwind-merge";
 import fetchErrorMsg from "../components/fetchErrorMsg";
 import axios from "../helpers/axios";
 
@@ -31,6 +32,9 @@ const ForgotPasswordForm = () => {
     }
   };
 
+  const inputClass =
+    "focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none";
+
   return (
     <div className="mx-auto mt-9 sm:w-[500px]">
       <form
@@ -42,7 +46,10 @@ const ForgotPasswordForm = () => {
         </h2>
 
         <input
-          className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("email") ? "border-red-500" : ""}`}
+          className={twMerge(
+            inputClass,
+            fetchErrorMsg("email") ? "border-red-500" : "",
+          )}
           name="email"
           type="email"
           placeholder="email"

@@ -1,43 +1,115 @@
-import { useEffect, useState } from "react";
-
 import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { toast } from "react-toastify";
+import { twMerge } from "tailwind-merge";
+
+import { Link, useNavigate } from "react-router-dom";
+import avatar from "../assets/avatar.jpg";
 import Button from "../components/Button";
+import ConfirmModal from "../components/ConfirmModal";
 import fetchErrorMsg from "../components/fetchErrorMsg";
+import FileUploadBtn from "../components/FileUploadBtn";
 import Loader from "../components/Loader";
+import { useAuthContext } from "../contexts/AuthContext";
 import axios from "../helpers/axios";
 
 const Profile = () => {
   const [user, setUser] = useState({});
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
+  const [imageFromDB, setImageFromDB] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
+  const navigate = useNavigate();
+  const { dispatch } = useAuthContext();
   const { createdAt } = user;
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setIsError(null);
-        setIsLoading(true);
-        const res = await axios.get("/api/v1/profile");
-        if (res.status >= 200 && res.status < 300) {
-          setUser(res.data.user);
-          setUsername(res.data.user.username);
-        }
-      } catch (error) {
-        setIsError(error.response.data);
-      } finally {
-        setIsLoading(false);
+  const fetchUser = async () => {
+    try {
+      setIsError(null);
+      setIsLoading(true);
+      const res = await axios.get("/api/v1/profile");
+      if (res.status >= 200 && res.status < 300) {
+        setUser(res.data.user);
+        setUsername(res.data.user.username);
       }
-    };
+      if (res.data.user.photo) {
+        setImageFromDB(
+          `${import.meta.env.VITE_API_ASSET_URL}${res.data.user.photo}`,
+        );
+      }
+    } catch (error) {
+      setIsError(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUser();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      setIsError(null);
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("password", password);
+      if (file) formData.append("photo", file);
+      const res = await axios.patch("/api/v1/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.status >= 200 && res.status < 300) {
+        setUsername(res.data.data.username);
+        toast.success(res.data.message);
+        window.location.reload();
+      }
+      setPassword("");
+      setFilePreview(null);
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+      setIsError(error.response.data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const res = await axios.delete("/api/v1/profile");
+    if (res.status >= 200 && res.status < 300) {
+      localStorage.removeItem("token");
+      dispatch({ type: "logout" });
+      setIsModalOpen((prev) => !prev);
+      navigate("/sign-in");
+      toast.success("Deleted successfully!");
+    }
+  };
+
+  const onChange = (e) => {
+    const chosenFile = e.target.files[0];
+    setFile(chosenFile);
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => setFilePreview(e.target.result);
+    fileReader.readAsDataURL(chosenFile);
   };
 
   if (isLoading) return <Loader />;
+
+  const inputClass =
+    "focus:shadow-outline mb-3 w-full  rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ";
+
+  const btnClass =
+    "item-center focus:shadow-outline flex w-full justify-center rounded bg-orange px-4 py-2 font-bold text-white transition-all duration-500 ease-out hover:bg-amber-600 focus:outline-none";
 
   return (
     <div className="m-auto mt-5 w-full max-w-md">
@@ -45,29 +117,42 @@ const Profile = () => {
         <Button btnType={"back"} />
       </div>
       <form
-        className="mb-4 rounded bg-white p-2 shadow-md md:px-8 md:pb-8 md:pt-6"
+        className="rounded bg-white p-2 shadow-md md:px-8 md:pb-8 md:pt-3"
         onSubmit={handleSubmit}
+        encType="multipart/form-data"
       >
-        <div>
-          <h1 className="mb-1 text-xl font-bold text-orange">
-            Your Profile Details
-          </h1>
-          <p className="mb-3 text-sm">
-            <span> Created on : </span>
-            {createdAt
-              ? `${format(createdAt, "MM-dd-yyyy")} ( ${format(createdAt, "h:mm aa")} )`
-              : "N/A"}
-          </p>
+        <img
+          src={imageFromDB || avatar}
+          alt={"image"}
+          className="mx-auto h-20 w-20 rounded-full border-2 border-orange object-cover"
+        />
+
+        <div className="mt-2 flex items-center justify-between">
+          <h1 className="mb-1 text-xl font-bold text-orange">Your Profile</h1>
+          <RiDeleteBin5Fill
+            className="cursor-pointer text-xl text-orange md:text-2xl"
+            title="delete"
+            onClick={() => setIsModalOpen((prev) => !prev)}
+          />
         </div>
+        <p className="mb-2 text-sm font-medium">
+          <span> Created on : </span>
+          {createdAt
+            ? `${format(createdAt, "MM-dd-yyyy")} ( ${format(createdAt, "h:mm aa")} )`
+            : "N/A"}
+        </p>
         <div className="mb-4">
           <label
-            className="mb-2 block text-sm font-bold text-gray-700"
+            className="mb-2 block text-sm font-bold text-gray-700 md:text-base"
             htmlFor="username"
           >
             Your Name
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("username") ? "border-red-500" : ""}`}
+            className={twMerge(
+              inputClass,
+              fetchErrorMsg("username") ? "border-red-500" : "",
+            )}
             id="username"
             name="username"
             type="text"
@@ -77,15 +162,18 @@ const Profile = () => {
           />
           {fetchErrorMsg("username", isError)}
         </div>
-        <div className="mb-6">
+        <div>
           <label
-            className="mb-2 block text-sm font-bold text-gray-700"
+            className="mb-2 block text-sm font-bold text-gray-700 md:text-base"
             htmlFor="password"
           >
             Password
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border ${fetchErrorMsg("password") ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
+            className={twMerge(
+              inputClass,
+              fetchErrorMsg("password") ? "border-red-500" : "",
+            )}
             id="password"
             name="password"
             type="text"
@@ -95,10 +183,27 @@ const Profile = () => {
           />
           {fetchErrorMsg("password", isError)}
         </div>
-
-        <div className="flex flex-col items-center justify-between gap-4">
+        <div className="flex items-center justify-between">
+          <div className="my-4 text-sm font-medium text-gray-700 transition-all duration-500 ease-out hover:text-orange md:text-base">
+            <Link to={"/user/profile/update"}>Update Password Here</Link>
+          </div>
+          <div className="space-y-2">
+            {fetchErrorMsg("photo", isError)}
+            <FileUploadBtn onChange={onChange} require={false} />
+          </div>
+        </div>
+        {filePreview && (
+          <div className="mt-4">
+            <img
+              src={filePreview}
+              alt={"image"}
+              className="mx-auto h-36 rounded-md"
+            />
+          </div>
+        )}
+        <div className="mt-4 flex flex-col items-center justify-between gap-4">
           <button
-            className={`item-center focus:shadow-outline flex w-full justify-center rounded bg-orange px-4 py-2 font-bold text-white hover:bg-amber-600 focus:outline-none ${isLoading ? "cursor-not-allowed" : ""}`}
+            className={twMerge(btnClass, isLoading ? "cursor-not-allowed" : "")}
             type="submit"
             disabled={isLoading}
           >
@@ -126,17 +231,18 @@ const Profile = () => {
             )}
             {isLoading ? "Updating ..." : " Update Profile"}
           </button>
-          {/* <div className="flex w-full justify-between gap-2 space-x-2 md:block md:text-center">
-        <span className="text-sm">Already have account?</span>
-        <Link
-          to={"/sign-in"}
-          className="inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"
-        >
-          Login Here
-        </Link>
-      </div> */}
         </div>
       </form>
+      {isModalOpen && (
+        <ConfirmModal
+          setIsModalOpen={setIsModalOpen}
+          handleDelete={handleDelete}
+          name={"Delete Account"}
+        >
+          Are you sure you want to delete your account? All of your data will be
+          permanently removed. This action cannot be undone.
+        </ConfirmModal>
+      )}
     </div>
   );
 };

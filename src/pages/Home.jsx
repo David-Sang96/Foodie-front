@@ -97,14 +97,20 @@ const Home = () => {
           <div>No recipe found</div>
         )}
       </div>
-      <Pagination totalPages={totalPages} currentPage={page} />
+      {recipes?.length > 0 && (
+        <Pagination totalPages={totalPages} currentPage={page} />
+      )}
 
       {isModalOpen && (
         <div>
           <ConfirmModal
             setIsModalOpen={setIsModalOpen}
             handleDelete={handleDelete}
-          />
+            name={"Delete Recipe"}
+          >
+            Are you sure you want to delete your recipe? All of your data will
+            be permanently removed. This action cannot be undone.
+          </ConfirmModal>
         </div>
       )}
     </>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { twMerge } from "tailwind-merge";
 import fetchErrorMsg from "../components/fetchErrorMsg";
 import { useAuthContext } from "../contexts/AuthContext";
 import axios from "../helpers/axios";
@@ -42,6 +43,15 @@ const LoginForm = () => {
     }
   };
 
+  const inputClass =
+    "focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none";
+
+  const linkClass =
+    '"inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"';
+
+  const btnClass =
+    "item-center focus:shadow-outline flex w-full justify-center rounded bg-orange px-4 py-2 font-bold text-white hover:bg-amber-600 focus:outline-none ";
+
   return (
     <div className="m-auto mt-10 w-full max-w-md">
       <form
@@ -59,7 +69,10 @@ const LoginForm = () => {
             Email
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("email") ? "border-red-500" : ""}`}
+            className={twMerge(
+              inputClass,
+              fetchErrorMsg("email") ? "border-red-500" : "",
+            )}
             id="email"
             name="email"
             type="email"
@@ -77,7 +90,10 @@ const LoginForm = () => {
             Password
           </label>
           <input
-            className={`focus:shadow-outline mb-3 w-full rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${fetchErrorMsg("password") ? "border-red-500" : ""}`}
+            className={twMerge(
+              inputClass,
+              fetchErrorMsg("password") ? "border-red-500" : "",
+            )}
             id="password"
             name="password"
             type="text"
@@ -88,15 +104,12 @@ const LoginForm = () => {
           {fetchErrorMsg("password", isError)}
         </div>
         <div className="flex flex-col items-center justify-between gap-4">
-          <Link
-            to={"/forgot-password"}
-            className="inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"
-          >
+          <Link to={"/forgot-password"} className={linkClass}>
             Forget password?
           </Link>
           <button
             disabled={isLoading}
-            className={`item-center focus:shadow-outline flex w-full justify-center rounded bg-orange px-4 py-2 font-bold text-white hover:bg-amber-600 focus:outline-none ${isLoading ? "cursor-not-allowed" : ""}`}
+            className={twMerge(btnClass, isLoading ? "cursor-not-allowed" : "")}
             type="submit"
           >
             {isLoading && (
@@ -125,10 +138,7 @@ const LoginForm = () => {
           </button>
           <div className="flex w-full justify-between gap-2 space-x-2 md:block md:text-center">
             <span className="text-sm"> Don&apos;t have account?</span>
-            <Link
-              to={"/sign-up"}
-              className="inline-block align-baseline text-sm font-bold text-orange hover:text-amber-600"
-            >
+            <Link to={"/sign-up"} className={linkClass}>
               Signup
             </Link>
           </div>
