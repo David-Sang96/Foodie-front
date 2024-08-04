@@ -14,7 +14,7 @@ const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
     <div className="space-y-3 overflow-hidden rounded-2xl bg-white p-3 md:p-5">
       <Link to={`/recipes/${_id}`}>
         <img
-          src={`${import.meta.env.VITE_API_ASSET_URL}${photo}`}
+          src={photo}
           alt={title}
           className="mx-auto rounded-md object-contain md:h-72"
         />
@@ -47,10 +47,17 @@ const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
       <p className="text-sm md:text-base">
         {description.slice(0, 100) + "..."}
       </p>
-      <p className="text-sm text-gray-500 md:text-base">
-        <span> Published on -</span>
-        {formatISO9075(createdAt, { representation: "date" })}
-      </p>
+      <div className="text-sm text-gray-500 sm:flex sm:items-center sm:justify-between">
+        <p>
+          <span>
+            Created By - {JSON.parse(localStorage.getItem("user"))?.username}
+          </span>
+        </p>
+        <p>
+          <span> Published on -</span>
+          {formatISO9075(createdAt, { representation: "date" })}
+        </p>
+      </div>
     </div>
   );
 };

@@ -32,7 +32,7 @@ const RecipeForm = () => {
         setTitle(title);
         setDescription(description);
         setIngredients(ingredients);
-        setFilePreview(`${import.meta.env.VITE_API_ASSET_URL}${photo}`);
+        setFilePreview(photo);
       }
     } catch (error) {
       setIsError(error.response.data);

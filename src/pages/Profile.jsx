@@ -70,8 +70,10 @@ const Profile = () => {
       });
       if (res.status >= 200 && res.status < 300) {
         setUsername(res.data.data.username);
+        fetchUser();
+        dispatch({ type: "setImage", payload: res.data.data.photo });
         toast.success(res.data.message);
-        window.location.reload();
+        navigate("/");
       }
       setPassword("");
       setFilePreview(null);

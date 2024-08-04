@@ -7,6 +7,7 @@ import ConfirmModal from "../components/ConfirmModal.jsx";
 import Loader from "../components/Loader.jsx";
 import Pagination from "../components/Pagination";
 import RecipeCard from "../components/RecipeCard";
+import Search from "../components/Search.jsx";
 import axios from "../helpers/axios";
 
 const Home = () => {
@@ -83,8 +84,9 @@ const Home = () => {
 
   return (
     <>
-      <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-        {recipes?.length > 0 ? (
+      <Search setResData={setResData} getRecipes={getRecipes} />
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {recipes?.length > 0 &&
           recipes.map((recipe) => (
             <RecipeCard
               key={recipe._id}
@@ -92,11 +94,13 @@ const Home = () => {
               setIsModalOpen={setIsModalOpen}
               setDeleteId={setDeleteId}
             />
-          ))
-        ) : (
-          <div>No recipe found</div>
-        )}
+          ))}
       </div>
+      {recipes?.length === 0 && (
+        <div className="mt-5 text-center text-xl font-bold text-orange md:text-3xl">
+          No recipe found
+        </div>
+      )}
       {recipes?.length > 0 && (
         <Pagination totalPages={totalPages} currentPage={page} />
       )}

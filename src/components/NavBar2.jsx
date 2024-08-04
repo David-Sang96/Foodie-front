@@ -50,13 +50,11 @@ const Navbar = () => {
           <Link to={"/"} className="flex cursor-pointer items-center gap-1">
             <GiCook className="text-3xl text-orange md:text-4xl" />
             <h1 className="text-xl font-bold text-orange md:text-3xl">
-              Recipes
+              Foodie
             </h1>
           </Link>
           <img
-            src={
-              image ? `${import.meta.env.VITE_API_ASSET_URL}${image}` : avatar
-            }
+            src={image ? image : avatar}
             alt="profile image"
             className="h-10 w-10 rounded-full border-2 border-orange object-cover md:h-12 md:w-12 lg:hidden"
           />
@@ -75,11 +73,7 @@ const Navbar = () => {
           {user !== null && (
             <>
               <img
-                src={
-                  image
-                    ? `${import.meta.env.VITE_API_ASSET_URL}${image}`
-                    : avatar
-                }
+                src={image ? image : avatar}
                 alt="profile image"
                 className="hidden h-12 w-12 rounded-full border-2 border-orange object-cover lg:block"
               />

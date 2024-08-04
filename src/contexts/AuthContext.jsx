@@ -7,23 +7,26 @@ const AuthContext = createContext();
 
 const initialState = {
   user: null,
+  image: null,
 };
 
 const authReducer = (state, action) => {
   switch (action.type) {
     case "login":
       localStorage.setItem("user", JSON.stringify(action.payload));
-      return { user: action.payload };
+      return { ...state, user: action.payload };
     case "logout":
       localStorage.removeItem("user");
       return initialState;
+    case "setImage":
+      return { ...state, image: action.payload };
     default:
       return state;
   }
 };
 
 const AuthContextProvider = ({ children }) => {
-  const [{ user }, dispatch] = useReducer(authReducer, initialState);
+  const [{ user, image }, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
     try {
@@ -43,7 +46,7 @@ const AuthContextProvider = ({ children }) => {
       console.error("Error checking authentication:", error);
       dispatch({ type: "logout" });
     }
-  }, []);
+  }, [image]);
 
   return (
     <AuthContext.Provider value={{ user, dispatch }}>

@@ -63,7 +63,7 @@ const Detail = () => {
       </div>
       <div className="space-y-3 overflow-hidden rounded-2xl bg-white p-3 md:p-5">
         <img
-          src={`${import.meta.env.VITE_API_ASSET_URL}${photo}`}
+          src={photo}
           alt={title}
           className="mx-auto rounded-md object-contain md:h-96"
         />

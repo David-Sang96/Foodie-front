@@ -76,21 +76,28 @@ const Favorite = () => {
   return (
     <>
       <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-        {recipes?.length > 0 ? (
+        {recipes?.length > 0 &&
           recipes.map((recipe) => (
             <FavoriteCard
               key={recipe._id}
               recipe={recipe}
               handleDelete={handleDelete}
             />
-          ))
-        ) : (
-          <div>
-            <p>No recipe found </p>
-            <Link to={"/"}>Back to Home</Link>
-          </div>
-        )}
+          ))}
       </div>
+      {recipes?.length === 0 && (
+        <div className="text-center">
+          <p className="mt-5 text-xl font-bold text-orange transition duration-500 ease-in md:text-3xl">
+            No recipe found
+          </p>
+          <Link
+            to={"/"}
+            className="mt-3 block text-sm underline transition-all duration-500 ease-out hover:text-orange md:text-base"
+          >
+            Back to Home
+          </Link>
+        </div>
+      )}
       {recipes?.length > 0 && (
         <Pagination totalPages={totalPages} currentPage={page} />
       )}
