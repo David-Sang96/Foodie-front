@@ -6,7 +6,8 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
-  const { title, description, _id, photo, createdAt, userId } = recipe;
+  const { title, description, _id, photo, createdAt, userId, username } =
+    recipe;
   const currentUserPost =
     JSON.parse(localStorage.getItem("user"))?._id === userId;
 
@@ -49,9 +50,7 @@ const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
       </p>
       <div className="text-sm text-gray-500 sm:flex sm:items-center sm:justify-between">
         <p>
-          <span>
-            Created By - {JSON.parse(localStorage.getItem("user"))?.username}
-          </span>
+          <span>Created By - {username}</span>
         </p>
         <p>
           <span> Published on -</span>

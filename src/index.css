@@ -23,3 +23,37 @@ body {
   background: #fb923c;
   color: #fff;
 }
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-exit {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-exit-active {
+  transition: opacity 500ms;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Optional: Add custom scrollbar styling if want */
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

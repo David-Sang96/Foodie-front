@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import App from "../App.jsx";
 import { useAuthContext } from "../contexts/AuthContext.jsx";
 import Detail from "../pages/Detail.jsx";
@@ -50,19 +54,19 @@ const Index = () => {
         },
         {
           path: "/sign-up",
-          element: !user ? <SignUpForm /> : <Home />,
+          element: !user ? <SignUpForm /> : <Navigate to={"/"} />,
         },
         {
           path: "/sign-in",
-          element: !user ? <LoginForm /> : <Home />,
+          element: !user ? <LoginForm /> : <Navigate to={"/"} />,
         },
         {
           path: "/forgot-password",
-          element: !user ? <ForgotPasswordForm /> : <Home />,
+          element: !user ? <ForgotPasswordForm /> : <Navigate to={"/"} />,
         },
         {
           path: "/reset-password/:resetToken",
-          element: !user ? <PasswordResetForm /> : <Home />,
+          element: !user ? <PasswordResetForm /> : <Navigate to={"/"} />,
         },
       ],
     },

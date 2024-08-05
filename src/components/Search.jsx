@@ -20,14 +20,14 @@ const Search = ({ setResData, getRecipes }) => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("something went wrong");
+      toast.error(error.response.data.message);
     }
   };
 
   return (
     <form
       action=""
-      className="mx-auto mb-3 mt-2 flex w-8/12 items-center gap-1 md:mb-6 md:w-[400px]"
+      className="mx-auto mb-3 mt-2 flex w-8/12 items-center gap-1 md:mb-5 md:w-[400px]"
       onSubmit={handleSubmit}
     >
       <input

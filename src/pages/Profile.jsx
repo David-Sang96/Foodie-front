@@ -38,9 +38,7 @@ const Profile = () => {
         setUsername(res.data.user.username);
       }
       if (res.data.user.photo) {
-        setImageFromDB(
-          `${import.meta.env.VITE_API_ASSET_URL}${res.data.user.photo}`,
-        );
+        setImageFromDB(res.data.user.photo);
       }
     } catch (error) {
       setIsError(error.response.data);

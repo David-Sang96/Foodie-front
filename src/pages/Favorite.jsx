@@ -17,8 +17,6 @@ const Favorite = () => {
 
   const { recipes, totalPages } = favoriteRecipe;
 
-  console.log(favoriteRecipe);
-
   useEffect(() => {
     if (page > totalPages || page < 1) {
       navigate("/recipes/favorite");
@@ -75,7 +73,7 @@ const Favorite = () => {
 
   return (
     <>
-      <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {recipes?.length > 0 &&
           recipes.map((recipe) => (
             <FavoriteCard
