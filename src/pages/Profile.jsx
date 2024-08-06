@@ -1,7 +1,6 @@
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -12,7 +11,7 @@ import fetchErrorMsg from "../components/fetchErrorMsg";
 import FileUploadBtn from "../components/FileUploadBtn";
 import Loader from "../components/Loader";
 import { useAuthContext } from "../contexts/AuthContext";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const Profile = () => {
   const [user, setUser] = useState({});
@@ -22,77 +21,67 @@ const Profile = () => {
   const [filePreview, setFilePreview] = useState(null);
   const [imageFromDB, setImageFromDB] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
   const { dispatch } = useAuthContext();
   const { createdAt } = user;
+  const { isError, isLoading, apiRequest } = useApiRequest();
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
-      setIsError(null);
-      setIsLoading(true);
-      const res = await axios.get("/api/v1/profile");
-      if (res.status >= 200 && res.status < 300) {
-        setUser(res.data.user);
-        setUsername(res.data.user.username);
-      }
-      if (res.data.user.photo) {
-        setImageFromDB(res.data.user.photo);
+      const options = {
+        method: "get",
+        url: "/api/v1/profile",
+      };
+      const res = await apiRequest(options);
+      setUser(res.user);
+      setUsername(res.user.username);
+      if (res.user.photo) {
+        setImageFromDB(res.user.photo);
       }
     } catch (error) {
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to get profile: ", error);
     }
-  };
+  }, [apiRequest]);
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setIsError(null);
-      setIsLoading(true);
-
       const formData = new FormData();
       formData.append("username", username);
       formData.append("password", password);
       if (file) formData.append("photo", file);
-      const res = await axios.patch("/api/v1/profile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.status >= 200 && res.status < 300) {
-        setUsername(res.data.data.username);
-        fetchUser();
-        dispatch({ type: "setImage", payload: res.data.data.photo });
-        toast.success(res.data.message);
-        navigate("/");
-      }
+
+      const options = {
+        method: "patch",
+        url: "/api/v1/profile",
+        data: formData,
+      };
+      const res = await apiRequest(options, "Profile is updated");
+      setUsername(res.data.username);
+      fetchUser();
+      dispatch({ type: "setImage", payload: res.data.photo });
       setPassword("");
       setFilePreview(null);
+      navigate("/");
     } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to update profile", error);
     }
   };
 
   const handleDelete = async () => {
-    const res = await axios.delete("/api/v1/profile");
-    if (res.status >= 200 && res.status < 300) {
-      localStorage.removeItem("token");
-      dispatch({ type: "logout" });
-      setIsModalOpen((prev) => !prev);
-      navigate("/sign-in");
-      toast.success("Deleted successfully!");
-    }
+    const options = {
+      method: "delete",
+      url: "/api/v1/profile",
+    };
+    await apiRequest(options, "Deleted successfully!");
+    localStorage.removeItem("token");
+    dispatch({ type: "logout" });
+    setIsModalOpen((prev) => !prev);
+    navigate("/sign-in");
   };
 
   const onChange = (e) => {

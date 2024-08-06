@@ -1,20 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import FavoriteCard from "../components/FavoriteCard";
 import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const Favorite = () => {
   const [favoriteRecipe, setFavoriteRecipe] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const { isError, isLoading, apiRequest } = useApiRequest();
   const page = parseInt(searchParams.get("page")) || 1;
-
   const { recipes, totalPages } = favoriteRecipe;
 
   useEffect(() => {
@@ -25,18 +22,16 @@ const Favorite = () => {
 
   const getAllRecipes = useCallback(async () => {
     try {
-      setIsError(null);
-      setIsLoading(true);
-      const res = await axios.get(`/api/v1/favorite?page=${page}`);
-      if (res.status >= 200 && res.status < 300) {
-        setFavoriteRecipe(res.data);
-      }
+      const options = {
+        method: "get",
+        url: `/api/v1/favorite?page=${page}`,
+      };
+      const res = await apiRequest(options);
+      setFavoriteRecipe(res);
     } catch (error) {
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to get Favorite recipes:", error);
     }
-  }, [page]);
+  }, [page, apiRequest]);
 
   useEffect(() => {
     getAllRecipes();
@@ -56,14 +51,14 @@ const Favorite = () => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`/api/v1/favorite/${id}`);
-      if (res.status >= 200 && res.status < 300) {
-        filterRecipes(id);
-        toast.success("Removed successfully");
-      }
+      const options = {
+        method: "delete",
+        url: `/api/v1/favorite/${id}`,
+      };
+      await apiRequest(options, "Removed successfully");
+      filterRecipes(id);
     } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
+      console.error("Failed to remove recipe:", error);
     }
   };
 

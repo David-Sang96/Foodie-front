@@ -1,20 +1,25 @@
+import { lazy, Suspense } from "react";
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import App from "../App.jsx";
+
+import Loader from "../components/Loader.jsx";
 import { useAuthContext } from "../contexts/AuthContext.jsx";
 import Detail from "../pages/Detail.jsx";
 import Favorite from "../pages/Favorite.jsx";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm.jsx";
 import Home from "../pages/Home.jsx";
 import LoginForm from "../pages/LoginForm.jsx";
+import MyRecipes from "../pages/MyRecipes.jsx";
 import PasswordResetForm from "../pages/PasswordResetForm.jsx";
 import PasswordUpdateForm from "../pages/PasswordUpdateForm.jsx";
 import Profile from "../pages/Profile.jsx";
 import RecipeForm from "../pages/RecipeForm.jsx";
 import SignUpForm from "../pages/SignUpForm.jsx";
+
+const App = lazy(() => import("../App.jsx"));
 
 const Index = () => {
   const { user } = useAuthContext();
@@ -22,35 +27,43 @@ const Index = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <App />,
+      element: (
+        <Suspense fallback={<Loader />}>
+          <App />
+        </Suspense>
+      ),
       children: [
         {
           index: true,
-          element: user ? <Home /> : <LoginForm />,
+          element: user ? <Home /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/recipes/create",
-          element: user ? <RecipeForm /> : <LoginForm />,
+          element: user ? <RecipeForm /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/recipes/edit/:id",
-          element: user ? <RecipeForm /> : <LoginForm />,
+          element: user ? <RecipeForm /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/recipes/:id",
-          element: user ? <Detail /> : <LoginForm />,
+          element: user ? <Detail /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/user/profile",
-          element: user ? <Profile /> : <LoginForm />,
+          element: user ? <Profile /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/user/profile/update",
-          element: user ? <PasswordUpdateForm /> : <LoginForm />,
+          element: user ? <PasswordUpdateForm /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/recipes/favorite",
-          element: user ? <Favorite /> : <LoginForm />,
+          element: user ? <Favorite /> : <Navigate to={"/sign-in"} />,
+        },
+        {
+          path: "/recipes/my-recipes",
+          element: user ? <MyRecipes /> : <Navigate to={"/sign-in"} />,
         },
         {
           path: "/sign-up",

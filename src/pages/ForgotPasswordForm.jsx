@@ -1,34 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 import { twMerge } from "tailwind-merge";
 import fetchErrorMsg from "../components/fetchErrorMsg";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
+  const { isLoading, apiRequest, isError } = useApiRequest();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setIsError(null);
-      setIsLoading(true);
-      const res = await axios.post("/api/v1/users/forgot-password", { email });
-
-      if (res.status >= 200 && res.status < 300) {
-        toast.success("Check your email");
-        navigate("/sign-in");
-      }
+      const options = {
+        method: "post",
+        url: "/api/v1/users/forgot-password",
+        data: { email },
+      };
+      await apiRequest(options, "Check your email");
+      navigate("/sign-in");
     } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to reset password: ", error);
     }
   };
 

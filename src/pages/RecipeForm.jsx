@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../helpers/axios";
 
 import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 import { default as BackBtn, default as Button } from "../components/Button";
 import FileUploadBtn from "../components/FileUploadBtn";
 import IngredientCard from "../components/IngredientCard";
+import useApiRequest from "../hooks/useApiRequest";
 
 const RecipeForm = () => {
   const [title, setTitle] = useState("");
@@ -16,30 +16,29 @@ const RecipeForm = () => {
   const [ingredients, setIngredients] = useState([]);
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { isError, isLoading, apiRequest } = useApiRequest();
 
-  const getRecipe = useCallback(async (id) => {
-    try {
-      setIsError(null);
-      setIsLoading(true);
-      const res = await axios.get(`/api/v1/recipes/${id}`);
-      if (res.status >= 200 && res.status < 300) {
-        const { title, description, ingredients, photo } = res.data;
+  const getRecipe = useCallback(
+    async (id) => {
+      try {
+        const options = {
+          method: "get",
+          url: `/api/v1/recipes/${id}`,
+        };
+        const res = await apiRequest(options);
+        const { title, description, ingredients, photo } = res;
         setTitle(title);
         setDescription(description);
         setIngredients(ingredients);
         setFilePreview(photo);
+      } catch (error) {
+        console.error("Failed to getRecipe: ", error);
       }
-    } catch (error) {
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [apiRequest],
+  );
 
   useEffect(() => {
     if (id) {
@@ -48,7 +47,6 @@ const RecipeForm = () => {
       setTitle("");
       setDescription("");
       setIngredients([]);
-      setIsError(null);
       setFilePreview(null);
     }
   }, [id, getRecipe]);
@@ -65,8 +63,6 @@ const RecipeForm = () => {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      setIsError(null);
-      setIsLoading(true);
       if (title.length < 5)
         return toast.error("title must be at least 5 words");
 
@@ -81,24 +77,24 @@ const RecipeForm = () => {
       formData.append("description", description);
       formData.append("ingredients", JSON.stringify(ingredients));
 
-      const res = id
-        ? await axios.patch(`/api/v1/recipes/${id}`, formData)
-        : await axios.post(`/api/v1/recipes`, formData);
+      const options = {
+        method: "patch",
+        url: `/api/v1/recipes/${id}`,
+        data: formData,
+      };
 
-      if (res.status >= 200 && res.status < 300) {
-        toast.success(`${id ? "updated recipe" : "created recipe"}`);
-        navigate("/");
-      }
+      const options1 = {
+        method: "post",
+        url: `/api/v1/recipes`,
+        data: formData,
+      };
+
+      id
+        ? await apiRequest(options, "updated recipe")
+        : await apiRequest(options1, "created recipe");
+      navigate("/");
     } catch (error) {
-      console.log(error);
-      setIsError(error.response.data);
-      if (error.response.data.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Something went wrong");
-      }
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to create or update recipe: ", error);
     }
   };
 

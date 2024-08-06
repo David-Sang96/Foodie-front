@@ -1,24 +1,20 @@
-/* eslint-disable react-refresh/only-export-components */
-
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import ConfirmModal from "../components/ConfirmModal.jsx";
 import Loader from "../components/Loader.jsx";
 import Pagination from "../components/Pagination";
 import RecipeCard from "../components/RecipeCard";
 import Search from "../components/Search.jsx";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest.js";
 
 const Home = () => {
   const [resData, setResData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
+  const { isError, apiRequest, isLoading } = useApiRequest();
   const page = parseInt(searchParams.get("page")) || 1;
   const { recipes, totalPages } = resData;
 
@@ -30,22 +26,17 @@ const Home = () => {
 
   const getRecipes = useCallback(async () => {
     try {
-      setIsError(null);
-      setIsLoading(true);
-      const res = await axios(`/api/v1/recipes/?page=${page}`);
-      if (res.status >= 200 && res.status < 300) {
-        setResData(res.data);
-        // window.scroll({ top: 0, left: 0, behavior: "smooth" });
-      }
+      const options = {
+        method: "get",
+        url: `/api/v1/recipes/?page=${page}`,
+      };
+      const res = await apiRequest(options);
+      setResData(res);
+      // window.scroll({ top: 0, left: 0, behavior: "smooth" });
     } catch (error) {
-      setIsError(error.response.data);
-    } finally {
-      //  slight delay to avoid flicker (showing loader component)
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 200);
+      console.error("Failed to getting recipes:", error);
     }
-  }, [page]);
+  }, [page, apiRequest]);
 
   useEffect(() => {
     getRecipes();
@@ -66,15 +57,15 @@ const Home = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(`/api/v1/recipes/${deleteId}`);
-      if (res.status >= 200 && res.status < 300) {
-        filterRecipes(deleteId);
-        setIsModalOpen(false);
-        toast.success("deleted successfully");
-      }
+      const options = {
+        method: "delete",
+        url: `/api/v1/recipes/${deleteId}`,
+      };
+      await apiRequest(options, "deleted successfully");
+      filterRecipes(deleteId);
+      setIsModalOpen(false);
     } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
+      console.error("Failed to delete recipe:", error);
     }
   };
 

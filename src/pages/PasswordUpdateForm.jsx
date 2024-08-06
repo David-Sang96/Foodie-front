@@ -1,40 +1,40 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 
 import Button from "../components/Button";
 import fetchErrorMsg from "../components/fetchErrorMsg";
 import { useAuthContext } from "../contexts/AuthContext";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const PasswordUpdateForm = () => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
   const { dispatch } = useAuthContext();
+  const { isError, isLoading, apiRequest } = useApiRequest();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setIsError(null);
-      setIsLoading(true);
-      const data = { password, newPassword, passwordConfirmation };
-      const res = await axios.patch("api/v1/users/update-my-password", data);
-      if (res.status >= 200 && res.status < 300) {
+      const options = {
+        method: "patch",
+        url: "api/v1/users/update-my-password",
+        data: { password, newPassword, passwordConfirmation },
+      };
+
+      const res = await apiRequest(
+        options,
+        "Successfully Updated the password.Please log in again!",
+      );
+      if (res) {
         localStorage.removeItem("token");
         dispatch({ type: "logout" });
         navigate("/sign-in");
-        toast.success("Successfully Updated the password.Please log in again!");
       }
     } catch (error) {
-      console.log(error);
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
+      console.error(error);
     }
   };
 

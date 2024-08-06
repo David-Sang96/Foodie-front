@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineProfile } from "react-icons/ai";
+import { BiSolidBookmarkHeart } from "react-icons/bi";
+import { CgProfile } from "react-icons/cg";
 import { GiCook } from "react-icons/gi";
 import { HiMenuAlt3 } from "react-icons/hi";
+import { IoHome } from "react-icons/io5";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
+import { SlLogout } from "react-icons/sl";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,10 +22,23 @@ const Navbar = () => {
   const { user, dispatch } = useAuthContext();
 
   const LoggedLinks = [
-    { name: "Home", to: "/" },
-    { name: "Favorite", to: "/recipes/favorite" },
-    { name: "Create", to: "/recipes/create" },
-    { name: "Profile", to: "/user/profile" },
+    { name: "Home", to: "/", icon: <IoHome /> },
+    {
+      name: "MyRecipes",
+      to: "/recipes/my-recipes",
+      icon: <AiOutlineProfile />,
+    },
+    {
+      name: "Favorite",
+      to: "/recipes/favorite",
+      icon: <BiSolidBookmarkHeart />,
+    },
+    {
+      name: "Create",
+      to: "/recipes/create",
+      icon: <MdOutlineCreateNewFolder />,
+    },
+    { name: "Profile", to: "/user/profile", icon: <CgProfile /> },
   ];
 
   const handleLogout = async () => {
@@ -68,35 +86,36 @@ const Navbar = () => {
           </div>
         )}
         <ul
-          className={`absolute left-0 w-full py-10 text-orange backdrop-blur-lg transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
+          className={`absolute left-0 w-full py-10 text-orange backdrop-blur-xl transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
         >
           {user !== null && (
             <>
               <img
                 src={image ? image : avatar}
                 alt="profile image"
-                className="hidden h-12 w-12 rounded-full border-2 border-orange object-cover lg:block"
+                className="mr-6 hidden h-12 w-12 rounded-full border-2 border-orange object-cover lg:block"
               />
               {LoggedLinks.map((link) => (
                 <li
                   key={link.name}
-                  className="pb-4 pr-16 text-end font-bold text-orange lg:pb-0 lg:pr-0 lg:text-lg lg:font-normal lg:text-black"
+                  className="pb-4 pr-16 font-bold text-orange lg:pb-0 lg:pr-0 lg:text-lg lg:font-normal lg:text-black"
                 >
                   <NavLink
                     to={link.to}
-                    className="transition-all duration-500 ease-out hover:text-orange"
+                    className="flex items-center justify-end gap-1 transition-all duration-500 ease-out hover:text-orange"
                     onClick={() => setOpen((prev) => !prev)}
                   >
+                    <div className="text-xl"> {link.icon}</div>
                     {link.name}
                   </NavLink>
                 </li>
               ))}
-              <li className="pr-10 text-end lg:pr-0 lg:text-lg">
+              <li className="pr-14 text-end lg:pr-0 lg:text-lg" title="logout">
                 <button
-                  className="btn rounded bg-orange px-3 py-1 font-semibold text-white duration-500 lg:static lg:font-normal"
+                  className="btn rounded text-2xl font-extrabold text-orange duration-500 hover:text-orange lg:static lg:font-normal lg:text-black"
                   onClick={handleLogout}
                 >
-                  Logout
+                  <SlLogout />
                 </button>
               </li>
             </>

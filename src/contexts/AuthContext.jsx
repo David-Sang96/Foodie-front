@@ -6,7 +6,7 @@ import axios from "../helpers/axios";
 const AuthContext = createContext();
 
 const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
   image: null,
 };
 
@@ -29,23 +29,22 @@ const AuthContextProvider = ({ children }) => {
   const [{ user, image }, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    try {
-      axios.get("/api/v1/users/is-auth").then((res) => {
-        const user = res.data;
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/v1/users/is-auth");
         const localUser = JSON.parse(localStorage.getItem("user"));
-        if (user && localUser) {
-          dispatch({
-            type: "login",
-            payload: user,
-          });
+        if (res.data && localUser) {
+          dispatch({ type: "login", payload: res.data });
         } else {
           dispatch({ type: "logout" });
         }
-      });
-    } catch (error) {
-      console.error("Error checking authentication:", error);
-      dispatch({ type: "logout" });
-    }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        dispatch({ type: "logout" });
+      }
+    };
+
+    checkAuth();
   }, [image]);
 
   return (

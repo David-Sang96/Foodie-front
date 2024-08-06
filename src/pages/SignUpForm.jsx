@@ -1,41 +1,34 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 import fetchErrorMsg from "../components/fetchErrorMsg";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const SignUpForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
+  const { isLoading, apiRequest, isError } = useApiRequest();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setIsError(null);
-      setIsLoading(true);
-      const data = {
-        username,
-        email,
-        password,
-        passwordConfirmation,
+      const options = {
+        method: "post",
+        url: "/api/v1/users/register",
+        data: {
+          username,
+          email,
+          password,
+          passwordConfirmation,
+        },
       };
-      const res = await axios.post(`/api/v1/users/register`, data);
-      if (res.status >= 200 && res.status < 300) {
-        toast.success("registered successfully");
-        navigate("/sign-in");
-      }
+      await apiRequest(options, "registered successfully");
+      navigate("/sign-in");
     } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
-      setIsError(error.response.data);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to register: ", error);
     }
   };
 

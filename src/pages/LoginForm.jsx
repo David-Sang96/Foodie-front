@@ -1,45 +1,36 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 import fetchErrorMsg from "../components/fetchErrorMsg";
 import { useAuthContext } from "../contexts/AuthContext";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
   const { dispatch } = useAuthContext();
+  const { isLoading, isError, apiRequest } = useApiRequest();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setIsError(null);
-      setIsLoading(true);
-      const data = {
+
+    const options = {
+      method: "post",
+      url: "/api/v1/users/log-in",
+      data: {
         email,
         password,
-      };
-      const res = await axios.post(`/api/v1/users/log-in`, data);
-      if (res.status >= 200 && res.status < 300) {
-        localStorage.setItem("token", res.data.token);
-        dispatch({ type: "login", payload: res.data.user });
-        toast.success("logged in successfully");
-        navigate("/");
-      }
+      },
+    };
+
+    try {
+      const response = await apiRequest(options, "Logged in successfully");
+      localStorage.setItem("token", response.token);
+      dispatch({ type: "login", payload: response.user });
+      navigate("/");
     } catch (error) {
-      console.log(error);
-      if (error.response && error.response.status === 429) {
-        toast.error(`${error.response.data.message}`);
-      } else {
-        toast.error("something went wrong");
-        setIsError(error.response.data);
-      }
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to login:", error);
     }
   };
 

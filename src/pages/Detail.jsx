@@ -3,54 +3,46 @@ import { useEffect, useState } from "react";
 import { BiBookmarkHeart } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 
-import { toast } from "react-toastify";
 import Button from "../components/Button";
 import IngredientCard from "../components/IngredientCard";
 import Loader from "../components/Loader";
-import axios from "../helpers/axios";
+import useApiRequest from "../hooks/useApiRequest";
 
 const Detail = () => {
   const [recipe, getRecipe] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const { id } = useParams();
-
+  const { isLoading, apiRequest } = useApiRequest();
   const { title, description, ingredients, photo, createdAt } = recipe;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsError(null);
-        setIsLoading(true);
-        const res = await axios.get(`/api/v1/recipes/${id}`);
-        if (res.status >= 200 && res.status < 300) {
-          getRecipe(res.data);
-        }
+        const options = {
+          method: "get",
+          url: `/api/v1/recipes/${id}`,
+        };
+        const res = await apiRequest(options);
+        getRecipe(res);
       } catch (error) {
-        console.log(error.response.data);
-        setIsError(error.response.data);
-      } finally {
-        setIsLoading(false);
+        console.error("Failed to get recipe: ", error);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [id, apiRequest]);
 
   const handleAddFavorite = async () => {
     try {
-      const data = {
-        recipeId: id,
+      const options = {
+        method: "post",
+        url: "/api/v1/favorite",
+        data: {
+          recipeId: id,
+        },
       };
-      const res = await axios.post("/api/v1/favorite", data);
-      if (res.status >= 200 && res.status < 300) {
-        toast.success("Added to favorite successfully");
-      }
+      await apiRequest(options, "Added to favorite successfully");
     } catch (error) {
-      setIsError(error.response.data);
-      toast.error(error.response.data.message);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to add favorite recipe: ", error);
     }
   };
 
