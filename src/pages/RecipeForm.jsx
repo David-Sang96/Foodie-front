@@ -92,7 +92,7 @@ const RecipeForm = () => {
       id
         ? await apiRequest(options, "updated recipe")
         : await apiRequest(options1, "created recipe");
-      navigate("/");
+      id ? navigate("/recipes/my-recipes") : navigate("/");
     } catch (error) {
       console.error("Failed to create or update recipe: ", error);
     }
@@ -127,10 +127,10 @@ const RecipeForm = () => {
   };
 
   const inputClass =
-    "focus:shadow-outline w-full  rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base";
+    "focus:shadow-outline w-full rounded border p-2 text-sm leading-tight text-gray-700 shadow focus:outline-none md:px-3 md:py-2 md:text-base";
 
   return (
-    <div className="mx-auto max-w-md">
+    <div className="mx-auto mt-4 max-w-md">
       <div className="flex justify-end pb-1">
         <BackBtn btnType={"back"} />
       </div>

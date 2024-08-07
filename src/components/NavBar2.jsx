@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineClose, AiOutlineProfile } from "react-icons/ai";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
@@ -17,7 +17,6 @@ import axios from "../helpers/axios.js";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const { user, dispatch } = useAuthContext();
 
@@ -56,23 +55,18 @@ const Navbar = () => {
     }
   };
 
-  useEffect(() => {
-    const localUser = JSON.parse(localStorage.getItem("user"))?.photo;
-    setImage(localUser);
-  }, [user]);
-
   return (
-    <nav className="sticky right-0 top-0 w-full">
-      <div className="items-center justify-between bg-white px-3 py-3 lg:flex lg:px-5">
+    <nav className="lg:bg-customGray sticky right-0 top-0 w-full backdrop-blur-lg">
+      <div className="items-center justify-between px-3 py-3 lg:flex lg:px-5">
         <div className="flex items-center gap-5">
-          <Link to={"/"} className="flex cursor-pointer items-center gap-1">
-            <GiCook className="text-3xl text-orange md:text-4xl" />
+          <Link to={"/"} className="flex cursor-pointer gap-1">
+            <GiCook className="text-2xl text-orange md:text-4xl" />
             <h1 className="text-xl font-bold text-orange md:text-3xl">
               Foodie
             </h1>
           </Link>
           <img
-            src={image ? image : avatar}
+            src={user?.photo ? user.photo : avatar}
             alt="profile image"
             className="h-10 w-10 rounded-full border-2 border-orange object-cover md:h-12 md:w-12 lg:hidden"
           />
@@ -86,14 +80,14 @@ const Navbar = () => {
           </div>
         )}
         <ul
-          className={`absolute left-0 w-full py-10 text-orange backdrop-blur-xl transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
+          className={`bg-customGray absolute left-0 w-full py-10 text-orange transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
         >
           {user !== null && (
             <>
               <img
-                src={image ? image : avatar}
+                src={user?.photo ? user.photo : avatar}
                 alt="profile image"
-                className="mr-6 hidden h-12 w-12 rounded-full border-2 border-orange object-cover lg:block"
+                className="mr-3 hidden h-12 w-12 rounded-full border-2 border-orange object-cover lg:block"
               />
               {LoggedLinks.map((link) => (
                 <li

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import FavoriteCard from "../components/FavoriteCard";
 import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
+import ScrollToTopBtn from "../components/ScrollToTopBtn";
 import useApiRequest from "../hooks/useApiRequest";
 
 const Favorite = () => {
@@ -75,6 +76,7 @@ const Favorite = () => {
               key={recipe._id}
               recipe={recipe}
               handleDelete={handleDelete}
+              isHome={false}
             />
           ))}
       </div>
@@ -94,6 +96,7 @@ const Favorite = () => {
       {recipes?.length > 0 && (
         <Pagination totalPages={totalPages} currentPage={page} />
       )}
+      <ScrollToTopBtn />
     </>
   );
 };

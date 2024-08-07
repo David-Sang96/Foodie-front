@@ -12,7 +12,8 @@ const Detail = () => {
   const [recipe, getRecipe] = useState({});
   const { id } = useParams();
   const { isLoading, apiRequest } = useApiRequest();
-  const { title, description, ingredients, photo, createdAt } = recipe;
+  const { title, description, ingredients, photo, createdAt, userId } = recipe;
+  const currentUserId = JSON.parse(localStorage.getItem("user"))?._id;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +50,7 @@ const Detail = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="sm:mx-auto lg:w-[1000px]">
+    <div className="mt-4 sm:mx-auto lg:w-[1000px]">
       <div className="flex justify-end pb-1">
         <Button btnType={"back"} />
       </div>
@@ -61,15 +62,17 @@ const Detail = () => {
         />
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-orange md:text-xl">{title}</h3>
-          <BiBookmarkHeart
-            className="cursor-pointer text-2xl text-orange md:text-3xl"
-            onClick={handleAddFavorite}
-          />
+          {currentUserId !== userId && (
+            <BiBookmarkHeart
+              className="cursor-pointer text-2xl text-orange md:text-3xl"
+              onClick={handleAddFavorite}
+            />
+          )}
         </div>
 
         <p className="break-words text-sm md:text-base">{description}</p>
-        <div className="flex flex-wrap items-center space-x-1">
-          <span className="mb-1 text-sm md:text-base">Ingredients - </span>
+        <div className="flex flex-wrap items-center gap-1">
+          <span className="text-sm md:text-base">Ingredients - </span>
           <IngredientCard ingredients={ingredients} deleteAble={false} />
         </div>
         <div className="flex flex-col text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between md:text-base">
