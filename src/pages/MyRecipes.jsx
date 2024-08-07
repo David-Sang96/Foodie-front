@@ -75,7 +75,7 @@ const MyRecipes = () => {
 
   return (
     <>
-      <div className="mt-2 grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {recipes?.length > 0 &&
           recipes.map((recipe) => (
             <RecipeCard

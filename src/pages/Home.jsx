@@ -45,7 +45,7 @@ const Home = () => {
   return (
     <>
       <Search setResData={setResData} getRecipes={getRecipes} page={page} />
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {recipes?.length > 0 &&
           recipes.map((recipe) => (
             <FavoriteCard key={recipe._id} recipe={recipe} isHome={true} />
