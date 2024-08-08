@@ -17,7 +17,7 @@ const FavoriteCard = ({ recipe, handleDelete, isHome }) => {
   } = recipe;
 
   return (
-    <div className="transform space-y-3 overflow-hidden rounded-2xl bg-white p-3 transition duration-300 hover:scale-105 md:p-5">
+    <div className="transform space-y-3 overflow-hidden rounded-2xl bg-white p-3 transition duration-300 md:p-5 lg:hover:scale-105">
       <Link to={`/recipes/${_id}`}>
         <img
           src={photo}

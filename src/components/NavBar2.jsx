@@ -65,11 +65,13 @@ const Navbar = () => {
               Foodie
             </h1>
           </Link>
-          <img
-            src={user?.photo ? user.photo : avatar}
-            alt="profile image"
-            className="h-10 w-10 rounded-full border-2 border-orange object-cover md:h-12 md:w-12 lg:hidden"
-          />
+          {user && (
+            <img
+              src={user?.photo ? user.photo : avatar}
+              alt="profile image"
+              className="h-10 w-10 rounded-full border-2 border-orange object-cover md:h-12 md:w-12 lg:hidden"
+            />
+          )}
         </div>
         {user !== null && (
           <div
