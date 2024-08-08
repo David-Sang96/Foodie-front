@@ -83,6 +83,7 @@ const Profile = () => {
     dispatch({ type: "logout" });
     setIsModalOpen((prev) => !prev);
     navigate("/sign-in");
+    window.location.reload()
   };
 
   const onChange = (e) => {
