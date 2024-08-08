@@ -7,7 +7,7 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { IoHome } from "react-icons/io5";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { SlLogout } from "react-icons/sl";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 import avatar from "../assets/avatar.jpg";
@@ -16,7 +16,6 @@ import useApiRequest from "../hooks/useApiRequest.js";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
   const { user, dispatch } = useAuthContext();
   const { apiRequest } = useApiRequest();
 
@@ -50,8 +49,7 @@ const Navbar = () => {
       localStorage.removeItem("token");
       dispatch({ type: "logout" });
       setOpen((prev) => !prev);
-      navigate("/sign-in");
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Failed to logging out: ", error);
     }
