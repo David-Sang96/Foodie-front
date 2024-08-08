@@ -56,7 +56,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="lg:bg-customGray sticky right-0 top-0 w-full backdrop-blur-lg">
+    <nav className="sticky right-0 top-0 z-50 w-full backdrop-blur-lg lg:bg-customGray">
       <div className="items-center justify-between px-3 py-3 lg:flex lg:px-5">
         <div className="flex items-center gap-5">
           <Link to={"/"} className="flex cursor-pointer gap-1">
@@ -80,7 +80,7 @@ const Navbar = () => {
           </div>
         )}
         <ul
-          className={`bg-customGray absolute left-0 w-full py-10 text-orange transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
+          className={`absolute left-0 w-full bg-customGray py-10 text-orange transition-all duration-500 ease-in lg:static lg:z-auto lg:flex lg:w-auto lg:items-center lg:space-x-4 lg:py-0 lg:pb-0 lg:pl-0 ${open ? "top-14" : "top-[-490px]"}`}
         >
           {user !== null && (
             <>
