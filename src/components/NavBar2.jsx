@@ -8,17 +8,17 @@ import { IoHome } from "react-icons/io5";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { SlLogout } from "react-icons/sl";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import avatar from "../assets/avatar.jpg";
 import { useAuthContext } from "../contexts/AuthContext";
-import axios from "../helpers/axios.js";
+import useApiRequest from "../hooks/useApiRequest.js";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { user, dispatch } = useAuthContext();
+  const { apiRequest } = useApiRequest();
 
   const LoggedLinks = [
     { name: "Home", to: "/", icon: <IoHome /> },
@@ -42,16 +42,18 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get("/api/v1/users/log-out");
-      if (res.status >= 200 && res.status < 300) {
-        localStorage.removeItem("token");
-        dispatch({ type: "logout" });
-        setOpen((prev) => !prev);
-        navigate("/sign-in");
-        toast.success("logged out successfully!");
-      }
+      const options = {
+        method: "get",
+        url: "/api/v1/users/log-out",
+      };
+      await apiRequest(options, "logged out successfully!");
+      localStorage.removeItem("token");
+      dispatch({ type: "logout" });
+      setOpen((prev) => !prev);
+      navigate("/sign-in");
+      window.location.reload();
     } catch (error) {
-      toast.error(toast.error(`${error.response.data.message}`));
+      console.error("Failed to logging out: ", error);
     }
   };
 

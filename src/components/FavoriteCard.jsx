@@ -3,18 +3,25 @@ import { formatISO9075 } from "date-fns";
 import { BsBookmarkXFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
+import { useEffect, useState } from "react";
 import avatar from "../assets/avatar.jpg";
 
 const FavoriteCard = ({ recipe, handleDelete, isHome }) => {
+  const [username, setUserName] = useState("");
   const {
     title,
     description,
     _id,
     photo,
     createdAt,
-    username,
     userId: { photo: userImage },
   } = recipe;
+
+  const userName = JSON.parse(localStorage.getItem("user"))?.username;
+
+  useEffect(() => {
+    setUserName(userName);
+  }, [userName]);
 
   return (
     <div className="transform space-y-3 overflow-hidden rounded-2xl bg-white p-3 transition duration-300 md:p-5 lg:hover:scale-105">

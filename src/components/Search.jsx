@@ -37,8 +37,8 @@ const Search = ({ setResData, getRecipes, page }) => {
       <div className="relative w-full">
         <input
           type="text"
-          placeholder="search recipe"
-          className="w-full rounded-lg bg-gray-200 p-2 ps-8 text-sm text-gray-500 outline-none md:text-base lg:ps-11"
+          placeholder="search..."
+          className="w-full rounded-lg bg-gray-200 p-2 ps-8 text-sm text-gray-500 outline-none md:ps-11 md:text-base"
           onChange={(e) => setSearchText(e.target.value)}
           value={searchText}
         />

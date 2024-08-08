@@ -19,10 +19,10 @@ const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
           className="mx-auto rounded-md object-contain md:h-72"
         />
       </Link>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <h3 className="text-lg font-bold text-orange md:text-xl">{title}</h3>
         {currentUserPost ? (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 lg:gap-4">
             <Link to={`/recipes/edit/${_id}`}>
               <AiFillEdit
                 className="cursor-pointer text-xl text-orange md:text-2xl"
@@ -45,7 +45,7 @@ const RecipeCard = ({ recipe, setIsModalOpen, setDeleteId }) => {
       </div>
 
       <p className="text-sm md:text-base">
-        {description.slice(0, 100) + "..."}
+        {description.slice(0, 100) + "....."}
       </p>
       <p className="text-sm text-gray-500 md:text-base">
         <span> Published on -</span>

@@ -61,6 +61,7 @@ const Profile = () => {
         data: formData,
       };
       const res = await apiRequest(options, "Profile is updated");
+      localStorage.setItem("user", JSON.stringify(res.data));
       setUsername(res.data.username);
       fetchUser();
       dispatch({ type: "setImage", payload: res.data.photo });
