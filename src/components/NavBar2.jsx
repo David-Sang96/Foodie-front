@@ -50,7 +50,6 @@ const Navbar = () => {
       localStorage.removeItem("token");
       dispatch({ type: "logout" });
       setOpen((prev) => !prev);
-      navigate("/sign-in");
       window.location.reload();
     } catch (error) {
       console.error("Failed to logging out: ", error);
