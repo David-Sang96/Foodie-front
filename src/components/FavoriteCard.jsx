@@ -7,21 +7,22 @@ import { useEffect, useState } from "react";
 import avatar from "../assets/avatar.jpg";
 
 const FavoriteCard = ({ recipe, handleDelete, isHome }) => {
-  const [username, setUserName] = useState("");
+  const [currentUsername, setCurrentUserName] = useState("");
   const {
     title,
     description,
     _id,
     photo,
     createdAt,
-    userId: { photo: userImage },
+    username,
+    userId: { photo: userImage, _id: currentUserId },
   } = recipe;
 
-  const userName = JSON.parse(localStorage.getItem("user"))?.username;
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    setUserName(userName);
-  }, [userName]);
+    setCurrentUserName(user.username);
+  }, [user]);
 
   return (
     <div className="transform space-y-3 overflow-hidden rounded-2xl bg-white p-3 transition duration-300 md:p-5 lg:hover:scale-105">
@@ -63,7 +64,12 @@ const FavoriteCard = ({ recipe, handleDelete, isHome }) => {
         <div className="flex items-center justify-between text-sm text-gray-500">
           <div>
             <p>
-              <span>Created By - {username}</span>
+              <span>
+                Created By -{" "}
+                {user._id === currentUserId && currentUsername
+                  ? currentUsername
+                  : username}
+              </span>
             </p>
             <p>
               <span> Published on -</span>
