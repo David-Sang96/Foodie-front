@@ -45,7 +45,7 @@ const FavoriteCard = ({ recipe, handleDelete, isHome }) => {
         )}
       </div>
 
-      <p className="text-sm md:text-base">
+      <p className="break-words text-sm md:text-base">
         {description.slice(0, 100) + "..."}
       </p>
       {!isHome ? (
